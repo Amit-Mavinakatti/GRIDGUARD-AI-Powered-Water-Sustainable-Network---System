@@ -1,2 +1,9 @@
+
+[project]
+name = "gridguard-ai"
+version = "1.0.0"
+description = "Interactive water pipeline monitoring, leak simulation, and AI-assisted diagnostics"
+requires-python = ">=3.10"
+
 [tool.vercel]
-entrypoint = "backend.app:app"
+entrypoint = "backend/app.py"
