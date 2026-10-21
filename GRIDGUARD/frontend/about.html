@@ -1,0 +1,314 @@
+<!DOCTYPE html>
+<html lang="en" data-theme="dark">
+<head>
+  <meta charset="UTF-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1.0">
+  <meta name="theme-color" content="#080f1d">
+  <meta name="description" content="GRIDGUARD project documentation: system overview, architecture, AI-assisted diagnostics, simulation workflow, user manual, and limitations.">
+  <title>About GRIDGUARD | Project Documentation & User Manual</title>
+  <style>
+    :root{
+      color-scheme:dark;
+      --bg:#080f1d;--panel:#101b2d;--panel2:#0c1626;--tx:#e8eef8;
+      --mu:#9baac0;--bd:#29384e;--ac:#62f5d0;--purple:#b7a1ff;
+      --green:#4ade80;--amber:#fbbf24;--red:#fb7185;--shadow:0 18px 48px rgba(0,0,0,.22);
+    }
+    [data-theme="light"]{
+      color-scheme:light;--bg:#f4f7fb;--panel:#ffffff;--panel2:#edf2f8;
+      --tx:#172337;--mu:#596b82;--bd:#d8e1ec;--ac:#087f70;
+      --purple:#7250c7;--green:#187b43;--amber:#996300;--red:#c12f4e;
+      --shadow:0 18px 48px rgba(30,50,80,.08);
+    }
+    *{box-sizing:border-box}
+    html{scroll-behavior:smooth;scroll-padding-top:95px}
+    body{margin:0;background:var(--bg);color:var(--tx);font:15px/1.7 Inter,ui-sans-serif,system-ui,-apple-system,BlinkMacSystemFont,"Segoe UI",sans-serif}
+    a{color:var(--ac);text-underline-offset:4px}
+    button{font:inherit}
+    .topline{height:3px;background:linear-gradient(90deg,var(--ac),var(--purple),#5ca7ff)}
+    header{position:sticky;top:0;z-index:20;background:color-mix(in srgb,var(--bg) 88%,transparent);backdrop-filter:blur(16px);border-bottom:1px solid var(--bd)}
+    .nav{max-width:1200px;margin:auto;padding:13px 22px;display:flex;align-items:center;gap:20px}
+    .brand{display:flex;align-items:center;gap:10px;color:var(--tx);text-decoration:none;font-weight:900;letter-spacing:1.5px}
+    .brand-mark{width:28px;height:28px;border:2px solid var(--ac);border-radius:9px;display:grid;place-items:center;color:var(--ac);font-size:14px}
+    .navlinks{display:flex;align-items:center;gap:17px;margin-left:auto}
+    .navlinks a{font-size:12px;color:var(--mu);text-decoration:none;font-weight:700}
+    .navlinks a:hover{color:var(--ac)}
+    .btn{display:inline-flex;align-items:center;justify-content:center;gap:8px;padding:10px 14px;border:1px solid var(--bd);border-radius:10px;background:var(--panel);color:var(--tx);text-decoration:none;font-weight:800;font-size:12px;cursor:pointer}
+    .btn.primary{background:var(--ac);border-color:var(--ac);color:#06201c}
+    .btn:hover{transform:translateY(-1px)}
+    .wrap{max-width:1120px;margin:auto;padding:0 22px}
+    .hero{padding:76px 0 48px;position:relative;overflow:hidden}
+    .hero:before{content:"";position:absolute;width:440px;height:440px;right:-180px;top:-180px;border-radius:50%;background:radial-gradient(circle,rgba(98,245,208,.12),transparent 70%);pointer-events:none}
+    .eyebrow{color:var(--ac);font-size:11px;font-weight:900;letter-spacing:2.2px;text-transform:uppercase}
+    h1{font-size:clamp(38px,6vw,66px);line-height:1.04;letter-spacing:-2.5px;margin:15px 0 18px;max-width:850px}
+    h1 span{color:var(--ac)}
+    .lead{font-size:clamp(16px,2vw,19px);color:var(--mu);max-width:790px;line-height:1.8}
+    .hero-actions{display:flex;gap:10px;flex-wrap:wrap;margin-top:25px}
+    .notice{margin-top:25px;max-width:880px;padding:14px 16px;border:1px solid rgba(251,191,36,.32);border-radius:12px;background:rgba(251,191,36,.06);color:var(--mu);font-size:12px}
+    .notice strong{color:var(--amber)}
+    .stats{display:grid;grid-template-columns:repeat(4,1fr);gap:12px;margin:10px 0 44px}
+    .stat,.card,.step,.callout{background:var(--panel);border:1px solid var(--bd);border-radius:16px}
+    .stat{padding:18px}
+    .stat b{display:block;font-size:14px}
+    .stat span{font-size:12px;color:var(--mu)}
+    section{padding:30px 0 36px}
+    .section-head{max-width:760px;margin-bottom:22px}
+    .section-head h2{font-size:clamp(26px,3vw,36px);letter-spacing:-.8px;line-height:1.2;margin:8px 0 10px}
+    .section-head p{color:var(--mu);margin:0}
+    .grid2{display:grid;grid-template-columns:repeat(2,minmax(0,1fr));gap:16px}
+    .grid3{display:grid;grid-template-columns:repeat(3,minmax(0,1fr));gap:14px}
+    .card{padding:22px;min-width:0}
+    .card h3{margin:8px 0;font-size:17px}
+    .card p{color:var(--mu);margin:8px 0 0}
+    .ico{font-size:23px}
+    .pill{display:inline-flex;align-items:center;gap:6px;border:1px solid var(--bd);border-radius:99px;padding:5px 9px;font-size:10px;font-weight:800;color:var(--mu);margin:4px 4px 0 0}
+    .architecture{display:grid;grid-template-columns:1fr 36px 1fr 36px 1fr;gap:8px;align-items:stretch}
+    .archbox{padding:18px 14px;border:1px solid var(--bd);border-radius:13px;background:var(--panel);text-align:center}
+    .archbox b{display:block;font-size:13px;margin:6px 0}
+    .archbox span{font-size:11px;color:var(--mu)}
+    .arrow{display:grid;place-items:center;color:var(--ac);font-size:22px}
+    .steps{display:grid;gap:12px}
+    .step{display:grid;grid-template-columns:42px 1fr;gap:14px;padding:17px}
+    .num{width:38px;height:38px;border-radius:12px;background:rgba(98,245,208,.1);color:var(--ac);display:grid;place-items:center;font-weight:900}
+    .step h3{margin:0 0 5px;font-size:15px}
+    .step p{margin:0;color:var(--mu);font-size:13px}
+    .step code,.inline-code{font-family:ui-monospace,SFMono-Regular,Consolas,monospace;font-size:12px;background:var(--panel2);border:1px solid var(--bd);border-radius:6px;padding:2px 5px;overflow-wrap:anywhere}
+    .callout{padding:17px 19px;border-left:3px solid var(--ac);margin:18px 0;color:var(--mu)}
+    .callout strong{color:var(--tx)}
+    .table-wrap{overflow-x:auto;border:1px solid var(--bd);border-radius:13px}
+    table{border-collapse:collapse;width:100%;min-width:520px;background:var(--panel);font-size:13px}
+    th,td{text-align:left;padding:13px 15px;border-bottom:1px solid var(--bd);vertical-align:top}
+    th{font-size:11px;letter-spacing:.7px;text-transform:uppercase;color:var(--mu);background:var(--panel2)}
+    tr:last-child td{border-bottom:0}
+    td{color:var(--mu)}td strong{color:var(--tx)}
+    .tag{display:inline-block;font-size:10px;font-weight:900;border-radius:6px;padding:3px 7px;background:var(--panel2);border:1px solid var(--bd)}
+    .faq details{padding:15px 0;border-bottom:1px solid var(--bd)}
+    .faq summary{font-weight:800;cursor:pointer}
+    .faq details p{color:var(--mu);margin:10px 0 0}
+    footer{border-top:1px solid var(--bd);padding:28px 0 40px;margin-top:28px;color:var(--mu);font-size:12px}
+    .footer-inner{display:flex;justify-content:space-between;gap:18px;flex-wrap:wrap}
+    .backtop{position:fixed;right:18px;bottom:18px;z-index:10;width:42px;height:42px;border-radius:12px;background:var(--ac);color:#06201c;border:0;font-weight:900;cursor:pointer;box-shadow:var(--shadow)}
+    @media(max-width:850px){.navlinks{display:none}.stats{grid-template-columns:repeat(2,1fr)}.grid3{grid-template-columns:repeat(2,minmax(0,1fr))}.architecture{grid-template-columns:1fr}.arrow{transform:rotate(90deg);height:16px}.archbox{padding:14px}}
+    @media(max-width:560px){.wrap{padding:0 16px}.nav{padding:12px 16px}.hero{padding-top:52px}h1{letter-spacing:-1.5px}.grid2,.grid3{grid-template-columns:1fr}.stats{gap:8px}.stat{padding:14px}.card{padding:18px}.hero-actions .btn{width:100%}}
+    @media print{header,.hero-actions,.backtop{display:none!important}body{background:#fff;color:#111}.card,.stat,.step,.archbox,.callout{break-inside:avoid;background:#fff;color:#111;border-color:#ccc}.lead,.card p,.step p,td,footer{color:#444}.wrap{max-width:none;padding:0 10px}section{padding:15px 0}a{color:#111}}
+  </style>
+</head>
+<body>
+  <div class="topline"></div>
+  <header>
+    <nav class="nav" aria-label="Main navigation">
+      <a class="brand" href="#top"><span class="brand-mark">G</span> GRIDGUARD <span style="color:var(--mu);font-size:10px;font-weight:700;letter-spacing:.5px">DOCUMENTATION</span></a>
+      <div class="navlinks">
+        <a href="#overview">OVERVIEW</a>
+        <a href="#architecture">ARCHITECTURE</a>
+        <a href="#ai">AI IMPLEMENTATION</a>
+        <a href="#manual">USER MANUAL</a>
+        <a href="#limitations">LIMITATIONS</a>
+      </div>
+      <button class="btn" id="theme-toggle" type="button" aria-label="Toggle light and dark theme">◐ Theme</button>
+    </nav>
+  </header>
+
+  <main id="top">
+    <div class="wrap">
+      <section class="hero">
+        <div class="eyebrow">Project documentation · Technical overview · User guide</div>
+        <h1>Understand the system.<br><span>Protect every drop.</span></h1>
+        <p class="lead">GRIDGUARD is an AI-assisted water-network monitoring and leak-detection prototype. It combines a visual network simulation, pressure and flow concepts, anomaly-focused diagnostics, and an AI explanation layer to help users explore how hidden pipeline issues can be investigated.</p>
+        <div class="hero-actions">
+          <a class="btn primary" href="#manual">📘 Read the User Manual</a>
+          <a class="btn" href="#architecture">Explore System Architecture →</a>
+          <button class="btn" type="button" onclick="window.print()">⤓ Print / Save as PDF</button>
+          <a class="btn" href="index.html">← Back to Project</a>
+        </div>
+        <div class="notice"><strong>Prototype disclosure:</strong> GRIDGUARD demonstrates monitoring and diagnostic concepts using simulated or configured data. Unless separately connected and validated, it does not monitor a real municipal water network, control physical equipment, or guarantee real-world leak detection.</div>
+      </section>
+
+      <div class="stats" aria-label="Project summary">
+        <div class="stat"><b>Network Simulation</b><span>Visual nodes, pipes and scenarios</span></div>
+        <div class="stat"><b>AI-Assisted Analysis</b><span>Diagnostic explanations when configured</span></div>
+        <div class="stat"><b>Python Backend</b><span>Application and simulation components</span></div>
+        <div class="stat"><b>Engineering Prototype</b><span>For demonstration and learning</span></div>
+      </div>
+
+      <section id="overview">
+        <div class="section-head">
+          <div class="eyebrow">01 / Project overview</div>
+          <h2>What is GRIDGUARD?</h2>
+          <p>A demonstration of how water-network telemetry, simulation, and AI-assisted reasoning can work together in a monitoring workflow.</p>
+        </div>
+        <div class="grid3">
+          <article class="card"><div class="ico">🗺️</div><h3>Visual Network Model</h3><p>Explore a simplified network made of junctions and connected pipe segments. Simulation controls let users test scenarios and observe changes in displayed readings.</p></article>
+          <article class="card"><div class="ico">📈</div><h3>Telemetry & Anomalies</h3><p>Pressure and flow concepts provide context for comparing a simulated network state with a baseline or expected behaviour.</p></article>
+          <article class="card"><div class="ico">✨</div><h3>AI-Assisted Explanation</h3><p>When the Gemini integration is configured and reachable, an AI response can help explain a supplied scenario. AI output is advisory and should be checked against the underlying data.</p></article>
+        </div>
+        <div class="callout"><strong>Project objective:</strong> make water-network monitoring concepts easier to explore through a practical, visual prototype—rather than claim a production-ready utility or certified detection system.</div>
+      </section>
+
+      <section id="architecture">
+        <div class="section-head">
+          <div class="eyebrow">02 / Technical architecture</div>
+          <h2>How the components fit together</h2>
+          <p>The repository is organised into frontend, backend, simulation, detection, data and supporting integration scripts. Exact runtime behaviour depends on the currently configured files and services.</p>
+        </div>
+        <div class="architecture" aria-label="High-level architecture diagram">
+          <div class="archbox"><div class="ico">🖥️</div><b>Frontend</b><span>Dashboard, controls, visual network and user interaction</span></div>
+          <div class="arrow">→</div>
+          <div class="archbox"><div class="ico">⚙️</div><b>Python / Flask Backend</b><span>Application routes and coordination of simulation or diagnostic requests</span></div>
+          <div class="arrow">→</div>
+          <div class="archbox"><div class="ico">🧠</div><b>Simulation, Data & AI</b><span>Network logic, data utilities and optional Gemini-backed explanation</span></div>
+        </div>
+        <div class="grid2" style="margin-top:16px">
+          <article class="card"><h3>Repository areas</h3>
+            <p><span class="inline-code">frontend/</span> — web interface assets and pages.</p>
+            <p><span class="inline-code">backend/</span> — Flask application entry and API logic.</p>
+            <p><span class="inline-code">simulation/</span> — network simulation components.</p>
+            <p><span class="inline-code">detection/</span> — detection-related modules, depending on implementation.</p>
+            <p><span class="inline-code">data/</span> and <span class="inline-code">assets/</span> — data and project resources.</p>
+          </article>
+          <article class="card"><h3>Technologies in the project environment</h3>
+            <div><span class="pill">HTML</span><span class="pill">CSS</span><span class="pill">JavaScript</span><span class="pill">Python</span><span class="pill">Flask</span><span class="pill">Flask-CORS</span><span class="pill">NumPy</span><span class="pill">Pandas</span><span class="pill">NetworkX</span><span class="pill">asyncua</span><span class="pill">Google Gemini API</span></div>
+            <p style="font-size:12px;margin-top:12px">Listed technologies reflect the project environment and intended components; not every dependency is necessarily used on every page or in every execution path.</p>
+          </article>
+        </div>
+      </section>
+
+      <section id="ai">
+        <div class="section-head">
+          <div class="eyebrow">03 / AI implementation</div>
+          <h2>AI supports interpretation—not instrumentation</h2>
+          <p>The AI layer is intended to turn a supplied network scenario or diagnostic context into a readable explanation for a human operator or project evaluator.</p>
+        </div>
+        <div class="grid2">
+          <article class="card"><div class="ico">🧩</div><h3>Typical diagnostic workflow</h3>
+            <ol style="padding-left:20px;color:var(--mu)">
+              <li>The user selects or creates a simulation scenario.</li>
+              <li>The application gathers the context available to the diagnostic feature.</li>
+              <li>The configured backend or integration sends a request to the Gemini model.</li>
+              <li>The response is shown as an AI-generated explanation or suggested interpretation.</li>
+              <li>The user compares that explanation with displayed telemetry and known simulation settings.</li>
+            </ol>
+          </article>
+          <article class="card"><div class="ico">🔐</div><h3>API key and privacy</h3>
+            <p>For a deployed application, keep the Gemini API key on the server in an environment variable such as <span class="inline-code">GEMINI_API_KEY</span>. Do not commit secrets to Git or embed a private key in public client-side JavaScript.</p>
+            <p>AI requests may send the diagnostic context to the external AI provider. Do not submit credentials, private personal information, or sensitive infrastructure data unless authorised and appropriate safeguards are in place.</p>
+          </article>
+        </div>
+        <div class="callout"><strong>Important:</strong> an AI-generated explanation is not proof that a leak exists, nor is it a substitute for calibrated sensors, validated detection algorithms, domain-expert review, or field inspection. The actual features available depend on whether the API key, backend, network connection and relevant integration are configured correctly.</div>
+      </section>
+
+      <section id="manual">
+        <div class="section-head">
+          <div class="eyebrow">04 / User manual</div>
+          <h2>How to use GRIDGUARD</h2>
+          <p>Follow these steps to explore the interface safely and understand what the simulation is showing.</p>
+        </div>
+        <div class="steps">
+          <article class="step"><div class="num">01</div><div><h3>Open the project interface</h3><p>Open the main project page in a modern browser. Use the project’s main dashboard link to access the monitoring view. Keep <span class="inline-code">about.html</span> beside the page that links to it, or update the link path if the files are in different folders.</p></div></article>
+          <article class="step"><div class="num">02</div><div><h3>Review the baseline network</h3><p>Identify the junctions, connecting pipe segments and the values shown in the dashboard. Treat these as the current model or simulation context, not verified measurements from a real water system.</p></div></article>
+          <article class="step"><div class="num">03</div><div><h3>Run a scenario</h3><p>Use the available preset leak controls or simulation controls to select a scenario. Watch for changes in node status, pressure/flow displays, summary metrics and event messages. Control labels can vary between project versions.</p></div></article>
+          <article class="step"><div class="num">04</div><div><h3>Adjust simulation settings</h3><p>If available, adjust the severity/intensity control, unit selector or simulation refresh option. Change one setting at a time so you can observe which outputs respond to each change.</p></div></article>
+          <article class="step"><div class="num">05</div><div><h3>Read the telemetry carefully</h3><p>Compare the displayed reading with its baseline, note which junctions or pipe segments are highlighted, and distinguish measured or calculated values from explanatory labels. A visual alert is only as reliable as the model and data behind it.</p></div></article>
+          <article class="step"><div class="num">06</div><div><h3>Request an AI explanation</h3><p>If the AI diagnostic panel is enabled, ensure the backend and Gemini configuration are working, then run the diagnostic. Review the result as a suggestion, check it against the simulation, and do not treat it as a definitive engineering conclusion.</p></div></article>
+          <article class="step"><div class="num">07</div><div><h3>Export or record results</h3><p>If telemetry export is enabled, use its export control to download a CSV and inspect the columns in a spreadsheet. Confirm the export fields correspond to the current simulation values before using them in a report.</p></div></article>
+          <article class="step"><div class="num">08</div><div><h3>Reset and repeat</h3><p>Use the reset/clear control to return the simulation to its normal state, if provided. Try a different scenario and compare the resulting display. Clear any event history only after you have captured information you want to keep.</p></div></article>
+        </div>
+        <div class="callout"><strong>For a fair demonstration:</strong> describe the scenario you selected, what changed in the displayed telemetry, what the AI suggested (if used), and which parts are simulated. This makes the demonstration reproducible and avoids overstating the results.</div>
+      </section>
+
+      <section id="run">
+        <div class="section-head">
+          <div class="eyebrow">05 / Developer setup</div>
+          <h2>Running the Python backend</h2>
+          <p>Use these instructions only if you are running the local Python backend from the project root and its dependencies are installed.</p>
+        </div>
+        <div class="steps">
+          <article class="step"><div class="num">1</div><div><h3>Open a terminal at the project root</h3><p>Change directory to the folder containing <span class="inline-code">backend/</span>, <span class="inline-code">simulation/</span> and <span class="inline-code">requirements.txt</span>.</p></div></article>
+          <article class="step"><div class="num">2</div><div><h3>Install dependencies (if needed)</h3><p>Run <span class="inline-code">python -m pip install -r requirements.txt</span> from the project root.</p></div></article>
+          <article class="step"><div class="num">3</div><div><h3>Configure the AI key securely (if using Gemini)</h3><p>In PowerShell for the current terminal session, set <span class="inline-code">$env:GEMINI_API_KEY="YOUR_NEW_API_KEY"</span>. Replace the placeholder locally; never paste the real key into public code or documentation. If a key was exposed, revoke it and create a replacement.</p></div></article>
+          <article class="step"><div class="num">4</div><div><h3>Start the backend from the root</h3><p>Run <span class="inline-code">python -m backend.app</span>. Starting from the project root helps Python resolve sibling project packages such as <span class="inline-code">simulation</span>. Exact startup behaviour depends on the current app configuration.</p></div></article>
+          <article class="step"><div class="num">5</div><div><h3>Open the frontend</h3><p>Open the configured frontend page and ensure its API requests point to the correct backend address. If the browser blocks local requests or the UI reports connection errors, check the backend terminal and the frontend API base URL.</p></div></article>
+        </div>
+        <div class="callout"><strong>Configuration note:</strong> do not assume the backend is running just because the HTML page opens. AI diagnostics and backend-backed functionality require a running server, valid configuration, network access and any necessary API credentials.</div>
+      </section>
+
+      <section id="outputs">
+        <div class="section-head">
+          <div class="eyebrow">06 / Interpreting results</div>
+          <h2>What the outputs mean</h2>
+          <p>Use this table as a reading guide; exact units, thresholds and formulas should be confirmed in the implementation before treating them as engineering quantities.</p>
+        </div>
+        <div class="table-wrap">
+          <table>
+            <thead><tr><th>Output</th><th>How to read it</th><th>Check before relying on it</th></tr></thead>
+            <tbody>
+              <tr><td><strong>Junction status</strong></td><td>A visual indication of a node’s state in the current model.</td><td>How status is calculated and what each state means.</td></tr>
+              <tr><td><strong>Pressure</strong></td><td>A displayed or simulated pressure value for a junction or segment.</td><td>Units, baseline, formula and whether a real sensor is connected.</td></tr>
+              <tr><td><strong>Flow</strong></td><td>A displayed or simulated flow-related value.</td><td>Units, data source and whether it is calculated or observed.</td></tr>
+              <tr><td><strong>Leak alert</strong></td><td>An indication that the current scenario or detection logic has flagged an issue.</td><td>Detection rules, thresholds, false positives and validation results.</td></tr>
+              <tr><td><strong>AI explanation</strong></td><td>Generated text intended to help interpret the supplied context.</td><td>Whether the input context is accurate and whether the explanation is technically sound.</td></tr>
+              <tr><td><strong>CSV export</strong></td><td>A portable record of the fields included by the export function.</td><td>Column meanings, missing values, timestamps and whether the export reflects current readings.</td></tr>
+            </tbody>
+          </table>
+        </div>
+      </section>
+
+      <section id="limitations">
+        <div class="section-head">
+          <div class="eyebrow">07 / Responsible use</div>
+          <h2>Scope, assumptions and limitations</h2>
+          <p>Clear limitations are part of good engineering documentation and help visitors evaluate the project accurately.</p>
+        </div>
+        <div class="grid2">
+          <article class="card"><h3>What this prototype demonstrates</h3>
+            <p>• A visual representation of a simplified pipeline network.</p>
+            <p>• Interactive exploration of configured scenarios and telemetry concepts.</p>
+            <p>• A possible workflow for pairing data-driven monitoring with AI-assisted explanation.</p>
+            <p>• Software integration concepts across a web interface, Python backend and supporting modules.</p>
+          </article>
+          <article class="card"><h3>What it does not establish by itself</h3>
+            <p>• Live connection to water utility infrastructure or physical sensors.</p>
+            <p>• Proven leak-localisation accuracy, validated performance metrics or guaranteed detection.</p>
+            <p>• Automatic control of pumps, valves or other physical equipment.</p>
+            <p>• Production-grade security, operational reliability or safety certification.</p>
+          </article>
+        </div>
+        <div class="callout"><strong>Future validation work:</strong> document the data sources and units; validate detection logic against labelled test cases; measure precision, recall and false-alarm rates; test sensor or OPC UA integrations in a controlled environment; add authentication, logging and key management; and have qualified domain experts review operational assumptions before any real-world use.</div>
+      </section>
+
+      <section id="faq" class="faq">
+        <div class="section-head">
+          <div class="eyebrow">08 / Frequently asked questions</div>
+          <h2>Quick answers</h2>
+        </div>
+        <details><summary>Does GRIDGUARD detect real leaks right now?</summary><p>This page documents the project as a prototype. Unless real sensors, a verified data pipeline and validated detection logic have been connected, the interface should be treated as a simulation and demonstration.</p></details>
+        <details><summary>Does the project require an AI API key?</summary><p>Only the Gemini-backed AI feature requires its configured credentials. Core static documentation and any purely client-side interface can load without an AI key; backend-dependent functions may require separate configuration.</p></details>
+        <details><summary>Why is the AI diagnostic unavailable?</summary><p>Common causes include a stopped backend, a missing or invalid <span class="inline-code">GEMINI_API_KEY</span>, network connectivity, API access restrictions, an incorrect frontend API URL or a server-side exception. Check the backend terminal for the specific error.</p></details>
+        <details><summary>Can this project be expanded?</summary><p>Potential next steps include documented sensor interfaces, validated datasets, reproducible evaluation, calibrated thresholds, secure user access, robust telemetry storage and controlled integration testing. These should be implemented and tested rather than described as existing features before they are ready.</p></details>
+      </section>
+    </div>
+  </main>
+
+  <footer>
+    <div class="wrap footer-inner">
+      <div><strong style="color:var(--tx);letter-spacing:1px">GRIDGUARD</strong><br>AI-assisted water-network monitoring prototype</div>
+      <div>Project documentation · User manual · Technical overview<br><span>Use simulated outputs responsibly; validate before real-world application.</span></div>
+      <div><a href="#top">Back to top ↑</a></div>
+    </div>
+  </footer>
+  <button class="backtop" type="button" aria-label="Back to top" onclick="window.scrollTo({top:0,behavior:'smooth'})">↑</button>
+  <script>
+    (function(){
+      const root = document.documentElement;
+      const button = document.getElementById("theme-toggle");
+      let saved = null;
+      try { saved = localStorage.getItem("gg-about-theme"); } catch(e) {}
+      if(saved === "light" || saved === "dark") root.setAttribute("data-theme", saved);
+      button.addEventListener("click", function(){
+        const next = root.getAttribute("data-theme") === "dark" ? "light" : "dark";
+        root.setAttribute("data-theme", next);
+        try { localStorage.setItem("gg-about-theme", next); } catch(e) {}
+      });
+    })();
+  </script>
+</body>
+</html>

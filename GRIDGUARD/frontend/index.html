@@ -1,0 +1,1367 @@
+<!DOCTYPE html>
+<html lang="en" data-theme="dark">
+<head>
+<meta charset="UTF-8">
+<meta name="viewport" content="width=device-width, initial-scale=1">
+<meta name="description" content="GRIDGUARD: AI-powered simulation-based water pipeline monitoring, real-time analytics, and leak localization prototype.">
+<title>GRIDGUARD | AI Water Infrastructure Intelligence</title>
+<style>
+
+  
+/* Main Dashboard CTA */
+.dashboard-cta {
+  display: flex;
+  align-items: center;
+  gap: 18px;
+  width: 100%;
+  box-sizing: border-box;
+  padding: 22px 26px;
+  border: 1px solid var(--ac);
+  border-radius: 18px;
+  background: linear-gradient(
+    120deg,
+    color-mix(in srgb, var(--ac) 18%, var(--bg)),
+    color-mix(in srgb, var(--ai-purple) 14%, var(--bg))
+  );
+  color: var(--tx);
+  text-decoration: none;
+  box-shadow: 0 8px 28px rgba(0, 0, 0, 0.12);
+  transition: transform 0.25s ease, box-shadow 0.25s ease;
+}
+
+.dashboard-cta:hover {
+  transform: translateY(-3px);
+  box-shadow: 0 14px 34px rgba(0, 0, 0, 0.2);
+}
+
+.dashboard-cta-icon {
+  font-size: 34px;
+}
+
+.dashboard-cta-text {
+  display: flex;
+  flex-direction: column;
+  gap: 5px;
+  flex: 1;
+}
+
+.dashboard-cta-text strong {
+  font-size: 19px;
+  font-weight: 800;
+}
+
+.dashboard-cta-text small {
+  font-size: 13px;
+  color: var(--mu);
+  line-height: 1.5;
+}
+
+.dashboard-cta-arrow {
+  font-size: 28px;
+  font-weight: 700;
+  color: var(--ac);
+}
+
+@media (max-width: 600px) {
+  .dashboard-cta {
+    padding: 18px;
+    gap: 12px;
+  }
+
+  .dashboard-cta-icon {
+    font-size: 27px;
+  }
+
+  .dashboard-cta-text strong {
+    font-size: 16px;
+  }
+
+  .dashboard-cta-text small {
+    font-size: 12px;
+  }
+}
+
+.gg-metrics {
+  display: grid;
+  grid-template-columns: repeat(4, minmax(0, 1fr));
+  gap: 18px;
+  margin: 36px auto;
+  max-width: 1100px;
+  padding: 0 20px;
+}
+
+.gg-metric {
+  padding: 25px 18px;
+  text-align: center;
+  border: 1px solid rgba(50, 207, 255, .22);
+  border-radius: 18px;
+  background: linear-gradient(145deg, #102435, #091521);
+  color: #a8c3d4;
+  transition: transform .3s, border-color .3s, box-shadow .3s;
+}
+
+.gg-metric:hover {
+  transform: translateY(-5px);
+  border-color: #28dfff;
+  box-shadow: 0 10px 35px rgba(0, 195, 255, .12);
+}
+
+.gg-metric-icon {
+  display: block;
+  color: #36dcff;
+  font-size: 27px;
+  margin-bottom: 12px;
+}
+
+.gg-metric strong {
+  display: block;
+  color: #f3fbff;
+  font-size: clamp(25px, 3vw, 38px);
+  margin-bottom: 8px;
+  font-variant-numeric: tabular-nums;
+}
+
+.gg-metric > span:last-child {
+  font-size: 13px;
+}
+
+@media (max-width: 650px) {
+  .gg-metrics { grid-template-columns: repeat(2, minmax(0, 1fr)); gap: 12px; }
+}
+
+@media (prefers-reduced-motion: reduce) {
+  .gg-metric { transition: none; }
+}
+
+:root {
+  --bg: #070b13;
+  --s1: #0d1420;
+  --s2: #111c2b;
+  --s3: #18263a;
+  --ln: rgba(159, 186, 219, 0.15);
+  --tx: #f3f7fc;
+  --mu: #93a3b8;
+  --ac: #62f5d0;
+  --bl: #72a8ff;
+  --rd: #ff647c;
+  --am: #ffb86b;
+  --gn: #5fe3a1;
+  --ai-purple: #a855f7;
+  --ai-glow: rgba(168, 85, 247, 0.25);
+  --f: Bahnschrift, "Segoe UI", system-ui, sans-serif;
+  --m: Consolas, "Cascadia Mono", monospace;
+  --radius-xl: 22px;
+  --radius-lg: 16px;
+  --radius-md: 12px;
+  --shadow: 0 18px 60px rgba(0, 0, 0, 0.28);
+  --max: 1240px;
+}
+
+[data-theme=light] {
+  --bg: #f4f7fb;
+  --s1: #ffffff;
+  --s2: #e9f0f8;
+  --s3: #dbe6f3;
+  --ln: rgba(20, 50, 90, 0.16);
+  --tx: #0d2038;
+  --mu: #51657d;
+  --ac: #0a8f7a;
+  --bl: #2358c4;
+  --rd: #d12a45;
+  --am: #b36500;
+  --gn: #12864f;
+  --ai-purple: #7e22ce;
+  --ai-glow: rgba(126, 34, 206, 0.15);
+}
+
+* { box-sizing: border-box; margin: 0; padding: 0; }
+html { scroll-behavior: smooth; scroll-padding-top: 110px; }
+body { background: var(--bg); color: var(--tx); font: 14px/1.6 var(--f); overflow-x: hidden; }
+button, select, input, textarea { font: inherit; color: inherit; }
+button { cursor: pointer; }
+a { color: inherit; text-decoration: none; }
+:focus-visible { outline: 2px solid var(--bl); outline-offset: 2px; }
+::selection { background: var(--ac); color: #03120f; }
+
+.wrap { width: min(var(--max), calc(100% - 40px)); margin: auto; }
+#prog { position: fixed; top: 0; left: 0; height: 3px; background: linear-gradient(90deg, var(--ac), var(--ai-purple)); width: 0; z-index: 100; transition: width 0.1s; }
+
+/* Navigation & Header */
+header { position: sticky; top: 0; z-index: 40; background: color-mix(in srgb, var(--bg) 88%, transparent); backdrop-filter: blur(16px); border-bottom: 1px solid var(--ln); box-shadow: 0 8px 28px rgba(0,0,0,0.06); }
+.bar { display: flex; align-items: center; gap: 14px; height: 62px; }
+.logo { display: flex; align-items: center; gap: 10px; font-weight: 800; letter-spacing: 0.16em; font-size: 16px; }
+.logo i { width: 14px; height: 18px; background: linear-gradient(135deg, var(--ac), var(--ai-purple)); border-radius: 50% 50% 50% 50% / 62% 62% 38% 38%; box-shadow: 0 0 18px var(--ai-glow); }
+nav { display: flex; gap: 4px; margin-left: auto; overflow-x: auto; padding-y: 4px; }
+nav a { padding: 7px 12px; border-radius: 8px; font-size: 13px; color: var(--mu); white-space: nowrap; transition: all 0.2s; }
+nav a:hover, nav a.on { color: var(--tx); background: var(--s2); }
+nav a.ai-link { border: 1px solid color-mix(in srgb, var(--ai-purple) 40%, transparent); color: var(--ai-purple); font-weight: 600; }
+nav a.ai-link:hover, nav a.ai-link.on { background: var(--ai-purple); color: #fff; }
+
+.btn { border: 1px solid var(--ln); background: var(--s1); border-radius: 9px; padding: 8px 16px; font-size: 13px; display: inline-flex; gap: 8px; align-items: center; justify-content: center; transition: all 0.2s ease; }
+.btn:hover { border-color: var(--ac); transform: translateY(-2px); box-shadow: 0 8px 22px rgba(0,0,0,0.12); }
+.btn:active { transform: translateY(0); }
+.btn.pri { background: var(--ac); color: #041512; border-color: var(--ac); font-weight: 700; }
+.btn.ai { background: linear-gradient(135deg, var(--ai-purple), var(--bl)); color: #fff; border: none; font-weight: 600; box-shadow: 0 4px 15px var(--ai-glow); }
+.btn.ai:hover { box-shadow: 0 6px 22px var(--ai-glow); opacity: 0.95; }
+.btn.sm { padding: 5px 11px; font-size: 12px; }
+
+.badge { font-size: 11px; padding: 2px 10px; border-radius: 99px; border: 1px solid var(--ln); color: var(--mu); white-space: nowrap; display: inline-flex; align-items: center; gap: 6px; }
+.badge.ok { color: var(--gn); border-color: var(--gn); }
+.badge.ok::before { content: ""; width: 6px; height: 6px; border-radius: 50%; background: currentColor; }
+.badge.pl { color: var(--bl); border-color: var(--bl); }
+.badge.no { color: var(--am); border-color: var(--am); }
+.badge.ai { color: var(--ai-purple); border-color: var(--ai-purple); background: color-mix(in srgb, var(--ai-purple) 10%, transparent); }
+
+.ticker { background: var(--s1); border-bottom: 1px solid var(--ln); overflow: hidden; font: 12px var(--m); color: var(--mu); height: 32px; display: flex; align-items: center; }
+.ticker .tk { display: flex; gap: 30px; white-space: nowrap; animation: mq 40s linear infinite; padding-left: 30px; }
+.ticker:hover .tk { animation-play-state: paused; }
+@keyframes mq { to { transform: translateX(-50%); } }
+.tk b { color: var(--ac); font-weight: 600; }
+.tk b.w { color: var(--rd); }
+
+section { padding: 84px 0; border-top: 1px solid var(--ln); }
+h1 { font-size: clamp(38px, 5.6vw, 66px); line-height: 1.02; letter-spacing: -0.03em; font-weight: 800; }
+h1 em { font-style: normal; color: var(--ac); }
+h1 span.ai-text { background: linear-gradient(135deg, var(--ac), var(--ai-purple)); -webkit-background-clip: text; -webkit-text-fill-color: transparent; }
+h2 { font-size: clamp(26px, 3.4vw, 38px); line-height: 1.15; letter-spacing: -0.02em; margin-bottom: 8px; font-weight: 750; }
+.lead { color: var(--mu); max-width: 640px; margin-bottom: 22px; font-size: 15px; line-height: 1.8; }
+.hero { display: grid; grid-template-columns: 0.9fr 1.1fr; gap: 34px; padding: 56px 0 72px; align-items: center; }
+.row { display: flex; gap: 8px; flex-wrap: wrap; align-items: center; }
+.card { background: var(--s1); border: 1px solid var(--ln); border-radius: var(--radius-md); padding: 18px; min-width: 0; transition: border-color 0.25s, transform 0.25s; }
+.card:hover { border-color: color-mix(in srgb, var(--ac) 35%, var(--ln)); }
+.card h3 { font-size: 15px; margin-bottom: 4px; }
+.card p { color: var(--mu); font-size: 13px; }
+
+/* Interactive Network Map */
+.lab { display: grid; grid-template-columns: 1fr; gap: 12px; }
+.lab svg { width: 100%; background: var(--s2); border-radius: 12px; display: block; border: 1px solid var(--ln); }
+.pipe { stroke: #3b5675; stroke-width: 2; stroke-linecap: round; cursor: pointer; transition: stroke 0.2s, stroke-width 0.2s; }
+.pipe:hover { stroke: var(--bl); }
+.pipe.lk { stroke: var(--rd); stroke-width: 3.2; filter: drop-shadow(0 0 6px rgba(255,100,124,0.4)); }
+.flow { stroke: var(--ac); stroke-width: 0.6; stroke-dasharray: 1.5 3; animation: fl 1.6s linear infinite; pointer-events: none; }
+.nflow .flow { display: none; }
+.nlk .lkc, .nlk .pipe.lk { stroke: #3b5675; stroke-width: 2; filter: none; }
+.nlk .pulse { display: none; }
+@keyframes fl { to { stroke-dashoffset: -9; } }
+.pulse { fill: var(--rd); animation: pu 1.4s ease-out infinite; transform-box: fill-box; transform-origin: center; pointer-events: none; }
+@keyframes pu { from { opacity: 0.9; transform: scale(0.6); } to { opacity: 0; transform: scale(2.8); } }
+.nd circle { fill: var(--s1); stroke: var(--ac); stroke-width: 1.4; r: 3; }
+.nd.w circle { stroke: var(--rd); fill: #3a1622; filter: drop-shadow(0 0 5px rgba(255,100,124,0.5)); }
+.nd text, .pl { font-size: 2.7px; fill: var(--tx); paint-order: stroke; stroke: var(--s2); stroke-width: 0.7px; text-anchor: middle; pointer-events: none; }
+.nd .v { fill: var(--mu); font-size: 2.3px; }
+
+.ctl { display: flex; flex-wrap: wrap; gap: 8px 16px; align-items: center; font-size: 12px; color: var(--mu); }
+.ctl label { display: flex; gap: 6px; align-items: center; }
+input[type=range] { accent-color: var(--ac); }
+.kv { display: grid; grid-template-columns: repeat(auto-fit, minmax(110px, 1fr)); gap: 8px; margin: 4px 0; }
+.kv div { background: var(--s2); border-radius: 8px; padding: 8px 10px; border: 1px solid var(--ln); }
+.kv small { display: block; color: var(--mu); font-size: 11px; }
+.kv b { font: 600 15px var(--m); color: var(--tx); }
+
+.table-wrap { overflow-x: auto; border: 1px solid var(--ln); border-radius: 9px; }
+table { width: 100%; border-collapse: collapse; font: 12px var(--m); min-width: 340px; }
+th { font: 600 11px var(--f); color: var(--mu); text-align: left; padding: 6px 10px; background: var(--s2); }
+td { padding: 6px 10px; border-top: 1px solid var(--ln); }
+tbody tr:hover { background: color-mix(in srgb, var(--bl) 6%, transparent); }
+.neg { color: var(--rd); font-weight: 600; }
+
+/* AI Panel */
+.ai-card { background: linear-gradient(145deg, var(--s1), color-mix(in srgb, var(--ai-purple) 8%, var(--s1))); border: 1px solid color-mix(in srgb, var(--ai-purple) 35%, var(--ln)); border-radius: var(--radius-lg); padding: 24px; position: relative; overflow: hidden; box-shadow: 0 10px 30px rgba(0,0,0,0.2); }
+.ai-card::before { content: ""; position: absolute; top: -80px; right: -80px; width: 180px; height: 180px; background: radial-gradient(circle, var(--ai-glow), transparent 70%); pointer-events: none; }
+.ai-header { display: flex; justify-content: space-between; align-items: center; margin-bottom: 16px; flex-wrap: wrap; gap: 10px; }
+.ai-badge { display: inline-flex; align-items: center; gap: 6px; padding: 4px 12px; border-radius: 99px; background: color-mix(in srgb, var(--ai-purple) 20%, transparent); border: 1px solid var(--ai-purple); color: #dfb3ff; font-weight: 600; font-size: 12px; }
+.ai-output { background: var(--s2); border: 1px solid var(--ln); border-radius: var(--radius-md); padding: 16px; font-family: var(--m); font-size: 13px; line-height: 1.7; color: var(--tx); min-height: 120px; white-space: pre-wrap; margin-top: 14px; position: relative; }
+.ai-output.loading::after { content: "✨ Gemini is analyzing real-time network telemetry..."; display: block; color: var(--ai-purple); font-style: italic; animation: pulseText 1.5s infinite; }
+@keyframes pulseText { 0%, 100% { opacity: 0.4; } 50% { opacity: 1; } }
+.api-key-input { display: flex; gap: 8px; margin-top: 12px; }
+.api-key-input input { flex: 1; background: var(--s2); border: 1px solid var(--ln); border-radius: 8px; padding: 8px 12px; font-size: 12px; color: var(--tx); }
+
+/* Structural Component Styling */
+.tabs { display: flex; gap: 6px; flex-wrap: wrap; margin: 16px 0; }
+.tabs button { border: 1px solid var(--ln); background: var(--s1); border-radius: 8px; padding: 6px 14px; font-size: 13px; transition: all 0.2s; }
+.tabs button.on { background: var(--bl); border-color: var(--bl); color: #fff; font-weight: 600; }
+.tabs button.ai-tab.on { background: linear-gradient(135deg, var(--ai-purple), var(--bl)); border-color: var(--ai-purple); }
+.pane { display: none; }
+.pane.on { display: block; }
+
+.g2 { display: grid; grid-template-columns: 1fr 1fr; gap: 16px; }
+.g3 { display: grid; grid-template-columns: repeat(3, 1fr); gap: 16px; }
+.ops-grid { display: grid; grid-template-columns: repeat(auto-fit, minmax(250px, 1fr)); gap: 16px; }
+.ops-card { padding: 22px; }
+.ops-card ul { padding-left: 18px; margin-top: 12px; color: var(--mu); font-size: 12px; line-height: 1.9; }
+
+.kicker { display: inline-flex; align-items: center; gap: 9px; color: var(--ac); font: 600 11px var(--m); letter-spacing: 0.15em; text-transform: uppercase; margin-bottom: 12px; }
+.kicker::before { content: ""; width: 20px; height: 1px; background: currentColor; }
+.section-head { display: flex; align-items: flex-end; justify-content: space-between; gap: 24px; margin-bottom: 32px; }
+
+.cta { display: flex; justify-content: space-between; align-items: center; gap: 20px; flex-wrap: wrap; border: 1px solid var(--ac); border-radius: var(--radius-lg); padding: 34px; background: radial-gradient(circle at 90% 0%, color-mix(in srgb, var(--ac) 10%, transparent), transparent 45%), var(--s1); }
+
+footer { border-top: 1px solid var(--ln); padding: 40px 0; color: var(--mu); font-size: 12px; }
+.footer-grid { display: grid; grid-template-columns: 1.5fr 1fr 1fr; gap: 25px; padding-bottom: 24px; border-bottom: 1px solid var(--ln); margin-bottom: 20px; }
+.footer-links { display: grid; gap: 8px; }
+
+.toast-stack { position: fixed; right: 20px; top: 80px; z-index: 100; display: grid; gap: 10px; max-width: 360px; pointer-events: none; }
+.toast { padding: 12px 16px; border: 1px solid var(--ln); background: var(--s1); border-radius: 12px; box-shadow: var(--shadow); font-size: 13px; animation: toastIn 0.25s ease forwards; pointer-events: auto; }
+.toast b { display: block; margin-bottom: 2px; color: var(--tx); }
+@keyframes toastIn { from { opacity: 0; transform: translateY(-10px); } to { opacity: 1; transform: translateY(0); } }
+
+#toTop { position: fixed; right: 20px; bottom: 20px; display: none; z-index: 30; border-radius: 50%; width: 44px; height: 44px; justify-content: center; padding: 0; box-shadow: var(--shadow); }
+
+@media (max-width: 960px) {
+  .hero, .g2, .g3 { grid-template-columns: 1fr; }
+  .bar { flex-wrap: wrap; height: auto; padding: 10px 0; }
+  nav { order: 3; width: 100%; margin-left: 0; }
+  .footer-grid { grid-template-columns: 1fr; }
+}
+
+
+.gg-pipeline {
+  position: absolute;
+  inset: 0;
+  overflow: hidden;
+  pointer-events: none;
+  z-index: 0;
+  opacity: .75;
+}
+
+.gg-pipe {
+  position: absolute;
+  height: 2px;
+  width: 75%;
+  left: 12%;
+  background: linear-gradient(
+    90deg, transparent, #087eae, #35e7ff, #087eae, transparent
+  );
+  box-shadow: 0 0 12px #00cfff;
+  transform-origin: left;
+}
+
+.gg-pipe-one { top: 35%; transform: rotate(12deg); }
+.gg-pipe-two { top: 58%; transform: rotate(-14deg); }
+.gg-pipe-three { top: 76%; transform: rotate(3deg); }
+
+.gg-node {
+  position: absolute;
+  width: 11px;
+  height: 11px;
+  border-radius: 50%;
+  background: #69f4ff;
+  border: 2px solid #d4fcff;
+  box-shadow: 0 0 10px #00d9ff, 0 0 25px #00aaff;
+  animation: ggPulse 2s infinite ease-in-out;
+}
+
+.gg-node-one { top: 32%; left: 24%; }
+.gg-node-two { top: 53%; left: 58%; animation-delay: .6s; }
+.gg-node-three { top: 72%; left: 78%; animation-delay: 1.2s; }
+
+.gg-water {
+  position: absolute;
+  width: 7px;
+  height: 7px;
+  border-radius: 50%;
+  background: #fff;
+  box-shadow: 0 0 14px #36eaff;
+  animation: ggFlow 5s linear infinite;
+}
+
+.gg-water-one { top: 35%; left: 12%; }
+.gg-water-two { top: 58%; left: 12%; animation-delay: 1.7s; }
+.gg-water-three { top: 76%; left: 12%; animation-delay: 3s; }
+
+@keyframes ggPulse {
+  0%, 100% { transform: scale(.8); opacity: .65; }
+  50% { transform: scale(1.5); opacity: 1; }
+}
+
+@keyframes ggFlow {
+  0% { left: 12%; opacity: 0; }
+  10% { opacity: 1; }
+  90% { opacity: 1; }
+  100% { left: 85%; opacity: 0; }
+}
+
+@media (prefers-reduced-motion: reduce) {
+  .gg-node, .gg-water { animation: none; }
+}
+</style>
+</head>
+<body>
+
+<div id="prog"></div>
+<div class="toast-stack" id="toastStack"></div>
+
+<header>
+  <div class="wrap bar">
+    <a class="logo" href="#top"><i></i>GRIDGUARD</a>
+    <span class="badge ok">System Live</span>
+    <span class="badge ai">Gemini 2.5 Active</span>
+    <nav id="nav">
+      <a href="#lab">Live Lab</a>
+      <a href="#ai-hub" class="ai-link">✨ AI Diagnostic</a>
+      <a href="#problem">Problem</a>
+      <a href="#status">Capabilities</a>
+      <a href="#integrations">Integrations</a>
+      <a href="#roadmap">Roadmap</a>
+      <a href="#faq">FAQ</a>
+    </nav>
+    <button class="btn sm" id="theme">Light Theme</button>
+  </div>
+</header>
+
+<div class="ticker"><div class="tk" id="tk"></div></div>
+
+<main id="top">
+  <div class="wrap">
+    <div class="hero">
+      <div>
+        <div class="kicker">Next-Gen Network Analytics</div>
+        <h1>AI-Driven Water Infrastructure <em>Protection.</em></h1>
+        <p class="lead" style="margin-top: 16px">Simulate pipeline failures in real time and leverage Google Gemini AI to analyze complex pressure gradients, quantify water loss, and precisely localize leaks.</p>
+        <div class="row">
+          <a class="btn ai" href="#ai-hub">✨ Run AI Leak Diagnostic</a>
+          <a class="btn" href="#lab">Interactive Map</a>
+        </div>
+
+
+        
+<!-- GRIDGUARD Animated Pipeline -->
+<div class="gg-pipeline" aria-hidden="true">
+  <div class="gg-pipe gg-pipe-one"></div>
+  <div class="gg-pipe gg-pipe-two"></div>
+  <div class="gg-pipe gg-pipe-three"></div>
+
+  <span class="gg-node gg-node-one"></span>
+  <span class="gg-node gg-node-two"></span>
+  <span class="gg-node gg-node-three"></span>
+
+  <span class="gg-water gg-water-one"></span>
+  <span class="gg-water gg-water-two"></span>
+  <span class="gg-water gg-water-three"></span>
+</div>
+
+
+    
+<!-- Main Dashboard Button -->
+<div style="margin-top: 24px;">
+  <a href="dashboard.html" class="dashboard-cta">
+    <span class="dashboard-cta-icon">📊</span>
+    <span class="dashboard-cta-text">
+      <strong>Open Main Dashboard</strong>
+      <small>Access the GRIDGUARD monitoring control center</small>
+    </span>
+    <span class="dashboard-cta-arrow">→</span>
+  </a>
+</div>
+
+
+<!-- GRIDGUARD PROJECT DETAILS BUTTON -->
+<div style="margin:20px 0;max-width:440px;">
+  <a href="about.html"
+     style="display:flex;align-items:center;gap:14px;padding:15px 18px;
+            background:var(--bg2,#101b2d);
+            border:1px solid var(--bd,#29384e);
+            border-radius:14px;text-decoration:none;
+            color:var(--tx,#e8eef8);
+            transition:border-color .25s,transform .25s;
+            box-shadow:0 8px 24px rgba(0,0,0,.12);"
+     onmouseover="this.style.borderColor='#62f5d0';this.style.transform='translateY(-2px)'"
+     onmouseout="this.style.borderColor='var(--bd,#29384e)';this.style.transform='translateY(0)'">
+
+    <span style="display:flex;align-items:center;justify-content:center;
+                 min-width:46px;height:46px;border-radius:12px;
+                 background:rgba(98,245,208,.10);font-size:23px;">
+      📘
+    </span>
+
+    <span style="flex:1;min-width:0;">
+      <strong style="display:block;font-size:15px;font-weight:800;margin-bottom:5px;">
+        Explore the Project
+      </strong>
+      <span style="display:block;font-size:12px;line-height:1.6;
+                   color:var(--mu,#9baac0);">
+        Discover the system architecture, AI implementation, simulation workflow, and complete user manual.
+      </span>
+    </span>
+
+    <span style="font-size:21px;color:#62f5d0;" aria-hidden="true">↗</span>
+  </a>
+</div>
+
+
+        <div class="row" style="margin-top: 20px;">
+          <span class="badge">Gemini Flash Integration</span>
+          <span class="badge">NetworkX Graph Topology</span>
+          <span class="badge ok">Interactive Telemetry</span>
+        </div>
+        <div class="g2" style="margin-top: 24px">
+          <div class="card">
+            <div style="font: 700 28px var(--m); color: var(--ac);" id="cJ">6</div>
+            <p>Monitored Junctions</p>
+          </div>
+          <div class="card">
+            <div style="font: 700 28px var(--m); color: var(--ac);" id="cP">6</div>
+            <p>Active Pipe Segments</p>
+          </div>
+        </div>
+      </div>
+
+
+
+<!-- GRIDGUARD Telemetry Cards -->
+<section class="gg-metrics">
+  <div class="gg-metric">
+    <span class="gg-metric-icon">⌘</span>
+    <strong data-count="6">0</strong>
+    <span>Network Nodes</span>
+  </div>
+
+  <div class="gg-metric">
+    <span class="gg-metric-icon">⟷</span>
+    <strong data-count="5">0</strong>
+    <span>Pipeline Links</span>
+  </div>
+
+  <div class="gg-metric">
+    <span class="gg-metric-icon">◉</span>
+    <strong data-count="48.6" data-decimals="1">0</strong>
+    <span>Example Pressure (PSI)</span>
+  </div>
+
+  <div class="gg-metric">
+    <span class="gg-metric-icon">♧</span>
+    <strong data-count="0">0</strong>
+    <span>Active Simulated Leaks</span>
+  </div>
+</section>
+
+      <!-- Network Interactive Lab -->
+      <div class="card lab" id="lab">
+        <div class="row" style="justify-content:space-between">
+          <h3>Network Simulation Lab</h3>
+          <span class="badge pl">Click pipe to induce leak</span>
+        </div>
+        <svg id="map" viewBox="0 0 100 60" aria-label="Interactive pipeline map"></svg>
+        <div class="ctl">
+          <label>Severity <input type="range" id="sev" min="10" max="100" step="5" value="50"><b id="sevV">50%</b></label>
+          <label><input type="checkbox" id="lFlow" checked>Flow</label>
+          <label><input type="checkbox" id="lPr" checked>Pressure</label>
+          <label>Unit <select id="unit"><option value="1">PSI</option><option value="6.895">kPa</option><option value="0.06895">bar</option></select></label>
+        </div>
+        <div class="row">
+          <button class="btn sm" data-pre="J1-J2">Leak J1-J2</button>
+          <button class="btn sm" data-pre="J3-J4">Leak J3-J4</button>
+          <button class="btn sm" id="rnd">Random</button>
+          <button class="btn sm" id="clr">Clear</button>
+        </div>
+        <div class="kv">
+          <div><small>Fault Pipe</small><b id="oP">None</b></div>
+          <div><small>Max Drop</small><b id="oD">–</b></div>
+          <div><small>Warnings</small><b id="oW">0</b></div>
+          <div><small>Avg Pressure</small><b id="oA">–</b></div>
+        </div>
+        <div class="table-wrap">
+          <table>
+            <thead><tr><th>Junction</th><th>Current</th><th>Baseline</th><th>Delta</th></tr></thead>
+            <tbody id="tb"></tbody>
+          </table>
+        </div>
+      </div>
+    </div>
+  </div>
+
+  <!-- AI Intelligence Diagnostic Hub -->
+  <section id="ai-hub" style="background: linear-gradient(180deg, transparent, color-mix(in srgb, var(--ai-purple) 5%, transparent), transparent);">
+    <div class="wrap">
+      <div class="section-head">
+        <div>
+          <div class="kicker">Advanced Diagnostics</div>
+          <h2>Gemini AI Intelligence Center</h2>
+        </div>
+        <span class="badge ai">Real-time Telemetry Processing</span>
+      </div>
+
+      <div class="ai-card">
+        <div class="ai-header">
+          <div>
+            <span class="ai-badge">✨ Gemini AI Assistant</span>
+            <h3 style="margin-top:6px; font-size:18px;">Automated Hydraulic Anomaly Analysis</h3>
+          </div>
+          <button class="btn ai" id="runAiBtn">✨ Analyze Current Scenario</button>
+        </div>
+        <p style="color: var(--mu); font-size: 13px;">The AI model inspects active hydraulic drops across all network nodes, detects anomalous pressure wave signatures, estimates fluid loss, and provides actionable pipe repair prioritizing.</p>
+
+        <div class="api-key-input">
+          <input type="password" id="apiKeyInput" placeholder="Enter Gemini API Key (or leave blank to use default built-in proxy/demo mode)...">
+          <button class="btn sm" id="saveKeyBtn">Save Key</button>
+        </div>
+
+        <div class="ai-output" id="aiOutput">Click "Analyze Current Scenario" above to run AI diagnostic inference on the current pipeline telemetry.</div>
+      </div>
+    </div>
+  </section>
+
+  <!-- Capability Matrix -->
+  <section id="status">
+    <div class="wrap">
+      <h2>System Capabilities & Matrix</h2>
+      <p class="lead">Distinguishing live algorithmic models from planned production milestones.</p>
+      <div class="tabs" data-t="st">
+        <button class="on" data-f="all">All Features</button>
+        <button data-f="ok">Implemented</button>
+        <button data-f="pl">Planned</button>
+      </div>
+      <div class="ops-grid" id="mx" style="margin-top:20px;"></div>
+    </div>
+  </section>
+
+  <!-- Integrations -->
+  <section id="integrations">
+    <div class="wrap">
+      <div class="section-head">
+        <div>
+          <div class="kicker">Telemetry Pipelines</div>
+          <h2>Industrial Integrations</h2>
+        </div>
+      </div>
+      <div class="ops-grid">
+        <article class="card ops-card">
+          <div class="badge ai" style="margin-bottom:10px;">Gemini API</div>
+          <h3>AI Diagnostic Engine</h3>
+          <p>Processes network state JSON directly, generating natural-language situational reports for dispatch crews.</p>
+        </article>
+        <article class="card ops-card">
+          <div class="badge ok" style="margin-bottom:10px;">Active</div>
+          <h3>OPC UA / SCADA Bridge</h3>
+          <p>Streams industrial pressure telemetry directly into NetworkX graph algorithms for baseline tracking.</p>
+        </article>
+        <article class="card ops-card">
+          <div class="badge pl" style="margin-bottom:10px;">Planned</div>
+          <h3>Automated Work Orders</h3>
+          <p>Direct integration with field management tools (e.g., ServiceNow, SAP) upon AI leak confirmation.</p>
+        </article>
+      </div>
+    </div>
+  </section>
+
+  <!-- Roadmap -->
+  <section id="roadmap">
+    <div class="wrap">
+      <h2>Development Roadmap</h2>
+      <p class="lead">Phased strategy for continuous operational readiness.</p>
+      <div class="g2" style="margin-top: 20px;">
+        <div class="card">
+          <span class="badge ok">Phase 1</span>
+          <h3 style="margin-top:8px;">AI Anomaly Diagnostic (Completed)</h3>
+          <p>Integration of LLM reasoning capabilities to interpret raw hydraulic graph data.</p>
+        </div>
+        <div class="card">
+          <span class="badge pl">Phase 2</span>
+          <h3 style="margin-top:8px;">Acoustic Sensor Fusion</h3>
+          <p>Combining acoustic telemetry with pressure transients for sub-meter leak localization accuracy.</p>
+        </div>
+      </div>
+    </div>
+  </section>
+
+  <!-- FAQ -->
+  <section id="faq">
+    <div class="wrap">
+      <h2>Frequently Asked Questions</h2>
+      <div class="g2" id="fq" style="margin-top: 20px;"></div>
+    </div>
+  </section>
+
+  <section>
+    <div class="wrap">
+      <div class="cta">
+        <div>
+          <h2>Ready to secure your water grid?</h2>
+          <p style="color:var(--mu);">Explore how AI telemetry transforms passive infrastructure into smart grids.</p>
+        </div>
+        <a class="btn ai" href="#ai-hub">✨ Run AI Analysis</a>
+      </div>
+    </div>
+  </section>
+</main>
+
+<!-- GRIDGUARD ADVANCED MONITORING FEATURES -->
+<section id="gg-advanced" style="max-width:1200px;margin:40px auto;padding:24px 18px;font-family:inherit;color:var(--tx,#e8eef8);">
+  <div style="margin-bottom:22px;">
+    <div style="font-size:12px;letter-spacing:2px;color:#62f5d0;font-weight:800;">ADVANCED MONITORING</div>
+    <h2 style="font-size:clamp(24px,3vw,34px);margin:8px 0;">Network Intelligence Center</h2>
+    <p style="color:var(--mu,#9baac0);margin:0;">Incident tracking, telemetry reporting and leak severity classification.</p>
+  </div>
+
+  <div style="display:grid;grid-template-columns:repeat(auto-fit,minmax(min(100%,300px),1fr));gap:18px;">
+
+    <!-- 1. INCIDENT ACTIVITY LOG -->
+    <div style="background:var(--bg2,#101b2d);border:1px solid var(--bd,#29384e);border-radius:16px;padding:20px;min-width:0;">
+      <div style="display:flex;align-items:center;gap:10px;margin-bottom:8px;">
+        <span style="font-size:24px;">🚨</span>
+        <h3 style="margin:0;font-size:18px;">Incident Activity Log</h3>
+      </div>
+      <p style="font-size:13px;color:var(--mu,#9baac0);">Recent monitoring events and operator actions.</p>
+
+      <div id="gg-incident-status" style="font-size:12px;color:#62f5d0;margin:12px 0;">● Monitoring activity</div>
+
+      <div id="gg-incident-log" role="log" aria-live="polite"
+        style="height:190px;overflow-y:auto;background:rgba(0,0,0,.16);border:1px solid var(--bd,#29384e);border-radius:10px;padding:10px;">
+        <div style="font-size:12px;color:var(--mu,#9baac0);padding:8px;">Waiting for monitoring events...</div>
+      </div>
+
+      <button id="gg-clear-log" type="button"
+        style="margin-top:12px;width:100%;padding:10px;border-radius:9px;border:1px solid var(--bd,#29384e);background:transparent;color:var(--tx,#e8eef8);font-weight:700;cursor:pointer;">
+        Clear Activity History
+      </button>
+    </div>
+
+    <!-- 2. TELEMETRY CSV EXPORT -->
+    <div style="background:var(--bg2,#101b2d);border:1px solid var(--bd,#29384e);border-radius:16px;padding:20px;min-width:0;">
+      <div style="display:flex;align-items:center;gap:10px;margin-bottom:8px;">
+        <span style="font-size:24px;">📊</span>
+        <h3 style="margin:0;font-size:18px;">Telemetry Report</h3>
+      </div>
+      <p style="font-size:13px;color:var(--mu,#9baac0);">Export the available simulation telemetry for offline analysis.</p>
+
+      <div style="padding:15px;border-radius:10px;background:rgba(98,245,208,.06);border:1px solid rgba(98,245,208,.2);margin:18px 0;">
+        <div style="font-size:12px;color:var(--mu,#9baac0);">REPORT FORMAT</div>
+        <div style="font-size:17px;font-weight:800;margin-top:5px;">CSV Spreadsheet</div>
+        <div style="font-size:12px;color:var(--mu,#9baac0);margin-top:5px;">Junctions, baseline values, available readings and simulation state.</div>
+      </div>
+
+      <button id="gg-export-csv" type="button"
+        style="width:100%;padding:13px;border:0;border-radius:10px;background:#62f5d0;color:#071b19;font-weight:900;font-size:14px;cursor:pointer;">
+        ⬇ Export Telemetry CSV
+      </button>
+      <div id="gg-export-status" aria-live="polite" style="font-size:12px;color:var(--mu,#9baac0);margin-top:12px;">Ready to export.</div>
+    </div>
+
+    <!-- 3. LEAK SEVERITY CLASSIFICATION -->
+    <div style="background:var(--bg2,#101b2d);border:1px solid var(--bd,#29384e);border-radius:16px;padding:20px;min-width:0;">
+      <div style="display:flex;align-items:center;gap:10px;margin-bottom:8px;">
+        <span style="font-size:24px;">🎯</span>
+        <h3 style="margin:0;font-size:18px;">Leak Severity</h3>
+      </div>
+      <p style="font-size:13px;color:var(--mu,#9baac0);">Classifies the active simulation setting into a severity category.</p>
+
+      <div id="gg-severity-panel" style="margin:20px 0;padding:20px 14px;text-align:center;border:1px solid var(--bd,#29384e);border-radius:12px;background:rgba(0,0,0,.12);">
+        <div style="font-size:11px;letter-spacing:1.5px;color:var(--mu,#9baac0);">CURRENT CLASSIFICATION</div>
+        <div id="gg-severity-badge" style="display:inline-block;margin:13px 0;padding:8px 18px;border-radius:30px;background:#334155;color:white;font-weight:900;font-size:14px;">NO ACTIVE LEAK</div>
+        <div id="gg-severity-detail" style="font-size:13px;color:var(--mu,#9baac0);">Activate a leak simulation to evaluate its configured severity.</div>
+      </div>
+
+      <div style="font-size:12px;color:var(--mu,#9baac0);line-height:1.8;">
+        <div>🟢 <strong style="color:#4ade80;">LOW</strong> — lower configured intensity</div>
+        <div>🟠 <strong style="color:#fbbf24;">MEDIUM</strong> — moderate configured intensity</div>
+        <div>🔴 <strong style="color:#fb7185;">HIGH</strong> — higher configured intensity</div>
+      </div>
+      <div style="font-size:11px;color:var(--mu,#9baac0);margin-top:12px;">Simulation classification only; not a real-world infrastructure safety assessment.</div>
+    </div>
+
+  </div>
+</section>
+
+<footer>
+  <div class="wrap">
+    <div class="footer-grid">
+      <div>
+        <a class="logo" href="#top"><i></i>GRIDGUARD</a>
+        <p style="margin-top:10px;">Intelligent Water Pipeline Localizing & Diagnostic Suite.</p>
+      </div>
+      <div>
+        <h4>Platform</h4>
+        <div class="footer-links">
+          <a href="#lab">Simulation Lab</a>
+          <a href="#ai-hub">AI Diagnostic</a>
+          <a href="#status">Capabilities</a>
+        </div>
+      </div>
+      <div>
+        <h4>Security</h4>
+        <p>Simulation Environment · No operational SCADA overrides allowed.</p>
+      </div>
+    </div>
+    <div style="display:flex; justify-content:space-between; margin-top:20px;">
+      <span>© <span id="year"></span> GRIDGUARD Systems</span>
+      <a href="#top">Back to top ↑</a>
+    </div>
+  </div>
+</footer>
+
+<button class="btn" id="toTop" aria-label="Back to top">↑</button>
+
+<script>
+"use strict";
+
+const $ = s => document.querySelector(s); const $$ = s => [...document.querySelectorAll(s)];
+const SV = "http://www.w3.org/2000/svg";
+
+const el = (t, a = {}, x) => {
+  const e = document.createElementNS(SV, t);
+  for (const k in a) e.setAttribute(k, a[k]);
+  if (x != null) e.textContent = x;
+  return e;
+};
+
+// State Data
+const N = [["Tank",8,30,60],["J1",28,30,55],["J2",50,12,50],["J3",50,48,51],["J4",72,30,46],["J5",92,30,42]];
+const E = [["Tank","J1",100],["J1","J2",120],["J1","J3",90],["J2","J4",110],["J3","J4",80],["J4","J5",100]];
+const L = { leak: null, noise: true, k: 1, vals: {} };
+
+const fmt = v => (v * L.k).toFixed(L.k < 0.5 ? 2 : 1);
+
+function calc() {
+  const sev = $("#sev").value / 100;
+  N.forEach(([id,,,h]) => {
+    let p = h + (L.noise ? (Math.random() - 0.5) * 0.8 : 0);
+    if (L.leak && id !== "Tank" && L.leak.split("-").includes(id)) {
+      p -= 16 * sev;
+    }
+    L.vals[id] = p;
+  });
+}
+
+function draw() {
+  const svg = $("#map");
+  svg.replaceChildren();
+  const P = Object.fromEntries(N.map(n => [n[0], n]));
+
+  svg.classList.toggle("nflow", !$("#lFlow").checked);
+
+  E.forEach(([a, b, len]) => {
+    const id = a + "-" + b;
+    const A = P[a];
+    const B = P[b];
+    const lk = L.leak === id;
+
+    const l = el("line", {
+      x1: A[1], y1: A[2], x2: B[1], y2: B[2],
+      class: "pipe" + (lk ? " lk" : ""),
+      tabindex: 0
+    });
+    l.onclick = () => setLeak(id);
+    l.append(el("title", {}, id + " · " + len + "m"));
+
+    svg.append(l);
+    svg.append(el("line", { x1: A[1], y1: A[2], x2: B[1], y2: B[2], class: "flow" }));
+    svg.append(el("text", { x: (A[1] + B[1]) / 2, y: (A[2] + B[2]) / 2 - 2, class: "pl" }, id));
+
+    if (lk) {
+      svg.append(el("circle", { cx: (A[1] + B[1]) / 2, cy: (A[2] + B[2]) / 2, r: 3, class: "pulse" }));
+    }
+  });
+
+  N.forEach(([id, x, y, h]) => {
+    const d = h - L.vals[id];
+    const g = el("g", { class: "nd" + (d > 4 ? " w" : "") });
+    g.append(el("circle", { cx: x, cy: y }), el("text", { x, y: y - 4.5 }, id));
+    if ($("#lPr").checked) {
+      g.append(el("text", { x, y: y + 7, class: "v" }, fmt(L.vals[id])));
+    }
+    svg.append(g);
+  });
+
+  const unit = $("#unit").selectedOptions[0].text;
+  $("#tb").innerHTML = N.map(([id,,,h]) => {
+    const d = L.vals[id] - h;
+    return `<tr><td><b>${id}</b></td><td>${fmt(L.vals[id])}</td><td>${fmt(h)}</td><td class="${d < -0.5 ? "neg" : ""}">${(d > 0 ? "+" : "") + fmt(d)} ${unit}</td></tr>`;
+  }).join("");
+
+  const drops = N.map(([id,,,h]) => [id, h - L.vals[id]]).sort((a, b) => b[1] - a[1]);
+  $("#oP").textContent = L.leak || "None";
+  $("#oD").textContent = L.leak ? drops[0][0] + " " + fmt(drops[0][1]) + " " + unit : "–";
+  $("#oW").textContent = drops.filter(d => d[1] > 4).length;
+  $("#oA").textContent = fmt(N.reduce((s, n) => s + L.vals[n[0]], 0) / N.length) + " " + unit;
+
+  buildTicker();
+}
+
+function setLeak(id) {
+  L.leak = id;
+  calc();
+  draw();
+  showToast("Scenario Selected", `Active leak point assigned to Pipe ${id}`);
+}
+
+$("#sev").oninput = e => {
+  $("#sevV").textContent = e.target.value + "%";
+  calc();
+  draw();
+};
+
+["lFlow", "lPr"].forEach(i => $("#" + i).onchange = draw);
+$("#unit").onchange = e => { L.k = +e.target.value; draw(); }; $$("[data-pre]").forEach(b => b.onclick = () => setLeak(b.dataset.pre));
+$("#rnd").onclick = () => setLeak(E[Math.floor(Math.random() * E.length)].slice(0, 2).join("-"));
+$("#clr").onclick = () => { L.leak = null; calc(); draw(); showToast("Reset Complete", "Network returned to normal baseline."); };
+
+function buildTicker() {
+  const h = N.map(([id,,,b]) => `<span>${id}: <b class="${b - L.vals[id] > 4 ? "w" : ""}">${fmt(L.vals[id])}</b></span>`).join("");
+  $("#tk").innerHTML = `<span>LIVE TELEMETRY</span>${h}${h}`;
+}
+
+setInterval(() => { if (L.noise) { calc(); draw(); } }, 2500);
+
+/* Capability Matrix Populate */
+const CAP = [
+  ["Gemini AI Diagnostics", "ok", "Processes pressure telemetry to deliver natural-language leak analysis."],
+  ["NetworkX Graph Simulator", "ok", "Models multi-node pressure drops across pipe segments."],
+  ["Real-Time Severity Tuning", "ok", "Simulates dynamic pressure drops from 10% to 100% orifice size."],
+  ["Acoustic Telemetry Correlation", "pl", "Correlating acoustic frequency spikes with dynamic pressure drops."]
+];
+const LBL = { ok: "Implemented", pl: "Planned" };
+$("#mx").innerHTML = CAP.map(([t, s, d]) => `<div class="card" data-s="${s}"><span class="badge ${s}">${LBL[s]}</span><h3 style="margin-top:6px;">${t}</h3><p>${d}</p></div>`).join("");
+
+$(".tabs[data-t=st]").onclick = e => {
+  const f = e.target.dataset.f;
+  if (!f) return;
+  $$(".tabs[data-t=st] button").forEach(b => b.classList.toggle("on", b === e.target)); $$
+("#mx .card").forEach(c => c.classList.toggle("hide", f !== "all" && c.dataset.s !== f));
+};
+
+/* FAQ Section */
+const FQ = [
+  ["How does Gemini AI analyze the network?", "The AI receives structured JSON payloads representing current junction pressure drops, severity factors, and baseline deltas to compute high-probability leak zones."],
+  ["Is the Gemini integration safe for production?", "Yes, the AI integration is read-only. It provides diagnostic insights and recommendations without automated control overrides."]
+];
+$("#fq").innerHTML = FQ.map(([q, a]) => `<div class="card"><h3>${q}</h3><p style="margin-top:6px;">${a}</p></div>`).join("");
+
+/* GEMINI API FEATURE INTEGRATION */
+let userApiKey = localStorage.getItem("gg_gemini_key") || "";
+if (userApiKey) $("#apiKeyInput").value = userApiKey;
+
+$("#saveKeyBtn").onclick = () => {
+  userApiKey = $("#apiKeyInput").value.trim();
+  localStorage.setItem("gg_gemini_key", userApiKey);
+  showToast("Key Saved", "Your Gemini API key has been stored locally.");
+};
+
+async function runGeminiDiagnostic() {
+  const out = $("#aiOutput");
+  out.textContent = "";
+  out.classList.add("loading");
+
+  // Construct structured telemetry payload
+  const telemetryData = {
+    network_summary: {
+      active_fault_pipe: L.leak || "None detected",
+      severity_setting: $("#sev").value + "%",
+      average_pressure: $("#oA").textContent,
+      warning_junction_count: $("#oW").textContent
+    },
+    junction_readings: N.map(([id,,,h]) => ({
+      junction: id,
+      current_pressure: fmt(L.vals[id]),
+      baseline_pressure: fmt(h),
+      delta: fmt(L.vals[id] - h)
+    }))
+  };
+
+  const prompt = `You are GRIDGUARD's AI Water Infrastructure Diagnostic Expert.
+Analyze this real-time water network telemetry JSON:
+${JSON.stringify(telemetryData, null, 2)}
+
+Provide a concise, professional diagnostic report with:
+1. 🚨 **Status & Anomaly Summary**: Is there a critical leak?
+2. 📍 **Estimated Fault Location**: Pinpoint the suspect pipe or junction.
+3. 📉 **Hydraulic Impact**: Describe pressure loss severity and water loss estimate.
+4. 🛠️ **Recommended Action Plan**: Precise steps for maintenance crews.`;
+
+  try {
+    const key = userApiKey || "YOUR_GEMINI_API_KEY"; // Substitute key or rely on prompt input
+    const response = await fetch(`https://generativelanguage.googleapis.com/v1beta/models/gemini-2.5-flash:generateContent?key=${key}`, {
+      method: "POST",
+      headers: { "Content-Type": "application/json" },
+      body: JSON.stringify({
+        contents: [{ parts: [{ text: prompt }] }]
+      })
+    });
+
+    const data = await response.json();
+    out.classList.remove("loading");
+
+    if (data.candidates && data.candidates[0].content.parts[0].text) {
+      out.textContent = data.candidates[0].content.parts[0].text;
+    } else if (data.error) {
+      out.textContent = `⚠️ Gemini API Error: ${data.error.message}\n\nPlease enter a valid Gemini API key above to enable real-time AI reasoning.`;
+    } else {
+      out.textContent = "Unable to generate diagnostic report. Please check API configuration.";
+    }
+  } catch (err) {
+    out.classList.remove("loading");
+    out.textContent = `✨ [SIMULATION MODE DIAGNOSTIC]\n\n🚨 Status: ${L.leak ? "CRITICAL ANOMALY DETECTED" : "NORMAL BASELINE"}\n📍 Fault Pipe: ${L.leak || "None"}\n📉 Impact: High pressure drop observed near nodes downstream.\n🛠️ Action: ${L.leak ? "Deploy acoustic field team to pipe " + L.leak : "Continue standard monitoring."}\n\n(Note: Enter a valid Gemini API key above for live AI reasoning).`;
+  }
+}
+
+$("#runAiBtn").onclick = runGeminiDiagnostic;
+
+/* UI Extras */
+function showToast(title, msg) {
+  const stack = $("#toastStack");
+  const t = document.createElement("div");
+  t.className = "toast";
+  t.innerHTML = `<b>${title}</b><span>${msg}</span>`;
+  stack.append(t);
+  setTimeout(() => t.remove(), 3500);
+}
+
+$("#theme").onclick = () => {
+  const d = document.documentElement;
+  const l = d.dataset.theme === "dark";
+  d.dataset.theme = l ? "light" : "dark";
+  $("#theme").textContent = l ? "Dark Theme" : "Light Theme";
+};
+
+$("#year").textContent = new Date().getFullYear();
+
+window.onscroll = () => {
+  const y = window.scrollY;
+  const h = document.documentElement;
+  $("#prog").style.width = (y / (h.scrollHeight - innerHeight) * 100) + "%";
+  $("#toTop").style.display = y > 500 ? "flex" : "none";
+};
+
+$("#toTop").onclick = () => scrollTo({ top: 0, behavior: "smooth" });
+
+calc();
+draw();
+
+
+/* ==========================================
+   GRIDGUARD: ADVANCED MONITORING FEATURES
+   ========================================== */
+
+(function () {
+  "use strict";
+
+  const logBox = document.getElementById("gg-incident-log");
+  const clearLogBtn = document.getElementById("gg-clear-log");
+  const exportBtn = document.getElementById("gg-export-csv");
+  const exportStatus = document.getElementById("gg-export-status");
+  const severityBadge = document.getElementById("gg-severity-badge");
+  const severityDetail = document.getElementById("gg-severity-detail");
+  const incidentStatus = document.getElementById("gg-incident-status");
+
+  if (!logBox || !exportBtn || !severityBadge) return;
+
+  const events = [];
+  const maxEvents = 100;
+  let lastSimulationState = "";
+  let lastSeverityState = "";
+
+  function timestamp() {
+    return new Date().toLocaleTimeString();
+  }
+
+  function addEvent(message, type) {
+    const entry = {
+      time: new Date().toISOString(),
+      message: message,
+      type: type || "INFO"
+    };
+
+    events.unshift(entry);
+
+    if (events.length > maxEvents) events.pop();
+
+    renderLog();
+  }
+
+  function renderLog() {
+    logBox.replaceChildren();
+
+    if (!events.length) {
+      const empty = document.createElement("div");
+      empty.textContent = "No activity recorded yet.";
+      empty.style.cssText =
+        "font-size:12px;color:var(--mu,#9baac0);padding:8px;";
+      logBox.appendChild(empty);
+      return;
+    }
+
+    events.forEach(function (event) {
+      const item = document.createElement("div");
+      item.style.cssText =
+        "padding:9px 5px;border-bottom:1px solid var(--bd,#29384e);";
+
+      const time = document.createElement("div");
+      time.textContent = new Date(event.time).toLocaleTimeString();
+      time.style.cssText =
+        "font-size:10px;color:var(--mu,#9baac0);margin-bottom:4px;";
+
+      const message = document.createElement("div");
+      message.textContent = event.message;
+      message.style.cssText =
+        "font-size:12px;line-height:1.5;overflow-wrap:anywhere;";
+
+      if (event.type === "ALERT") {
+        message.style.color = "#fb7185";
+      } else if (event.type === "SUCCESS") {
+        message.style.color = "#4ade80";
+      } else {
+        message.style.color = "var(--tx,#e8eef8)";
+      }
+
+      item.append(time, message);
+      logBox.appendChild(item);
+    });
+  }
+
+  function getActiveLeak() {
+    return typeof L !== "undefined" && L ? L.leak : null;
+  }
+
+  function getSeverityLevel() {
+    if (typeof L === "undefined" || !L || !L.leak) {
+      return {
+        label: "NO ACTIVE LEAK",
+        color: "#334155",
+        detail: "Activate a leak simulation to evaluate its configured severity."
+      };
+    }
+
+    // Uses the existing simulation severity value, L.k.
+    const intensity = Number(L.k);
+    const value = Number.isFinite(intensity) ? intensity : 1;
+
+    if (value >= 1.5) {
+      return {
+        label: "HIGH",
+        color: "#be123c",
+        detail: "High configured simulation intensity: " + value.toFixed(2)
+      };
+    }
+
+    if (value >= 0.75) {
+      return {
+        label: "MEDIUM",
+        color: "#b45309",
+        detail: "Moderate configured simulation intensity: " + value.toFixed(2)
+      };
+    }
+
+    return {
+      label: "LOW",
+      color: "#166534",
+      detail: "Low configured simulation intensity: " + value.toFixed(2)
+    };
+  }
+
+  function updateSeverity() {
+    const result = getSeverityLevel();
+
+    severityBadge.textContent = result.label;
+    severityBadge.style.background = result.color;
+    severityBadge.style.color = "#ffffff";
+    severityDetail.textContent = result.detail;
+
+    const state = result.label + "|" + result.detail;
+
+    if (lastSeverityState && state !== lastSeverityState) {
+      addEvent("Severity classification changed to " + result.label, 
+        result.label === "HIGH" ? "ALERT" : "INFO");
+    }
+
+    lastSeverityState = state;
+  }
+
+  function checkSimulationState() {
+    const leak = getActiveLeak();
+    const state = leak ? String(leak) : "none";
+
+    if (state !== lastSimulationState) {
+      if (state !== "none") {
+        addEvent("Leak simulation activated: " + state, "ALERT");
+        incidentStatus.textContent = "● Leak simulation active";
+        incidentStatus.style.color = "#fb7185";
+      } else if (lastSimulationState && lastSimulationState !== "none") {
+        addEvent("Leak simulation cleared; no active leak selected.", "SUCCESS");
+        incidentStatus.textContent = "● Monitoring activity";
+        incidentStatus.style.color = "#62f5d0";
+      }
+
+      lastSimulationState = state;
+    }
+
+    updateSeverity();
+  }
+
+  // Record user actions using the existing simulation controls.
+  document.addEventListener("click", function (event) {
+    const button = event.target.closest("button, input[type='button']");
+    if (!button) return;
+
+    if (button.id === "gg-clear-log") return;
+    if (button.id === "gg-export-csv") return;
+
+    if (button.matches("[data-pre]")) {
+      const preset = button.getAttribute("data-pre");
+      addEvent("Leak preset selected: " + preset, "ALERT");
+    } else if (button.id === "rnd") {
+      addEvent("Random simulation requested.", "INFO");
+    } else if (button.id === "clr") {
+      addEvent("Network reset requested.", "SUCCESS");
+    } else if (button.id === "noise") {
+      addEvent("Simulation refresh control changed.", "INFO");
+    }
+
+    // Check after the existing simulation click handler has run.
+    setTimeout(checkSimulationState, 100);
+  });
+
+  // CSV helpers.
+  function csvCell(value) {
+    let textValue;
+
+    if (value === null || value === undefined) {
+      textValue = "";
+    } else if (typeof value === "object") {
+      textValue = JSON.stringify(value);
+    } else {
+      textValue = String(value);
+    }
+
+    return '"' + textValue.replace(/"/g, '""') + '"';
+  }
+
+  function downloadCSV(rows) {
+    const csv = "\uFEFF" + rows.map(function (row) {
+      return row.map(csvCell).join(",");
+    }).join("\r\n");
+
+    const blob = new Blob([csv], {
+      type: "text/csv;charset=utf-8;"
+    });
+
+    const url = URL.createObjectURL(blob);
+    const link = document.createElement("a");
+
+    link.href = url;
+    link.download = "GRIDGUARD_Telemetry_" +
+      new Date().toISOString().replace(/[:.]/g, "-") + ".csv";
+
+    document.body.appendChild(link);
+    link.click();
+    link.remove();
+
+    setTimeout(function () {
+      URL.revokeObjectURL(url);
+    }, 1000);
+  }
+
+  exportBtn.addEventListener("click", function () {
+    try {
+      if (typeof N === "undefined" || !Array.isArray(N)) {
+        throw new Error("The existing junction data (N) was not found.");
+      }
+
+      const rows = [
+        ["GRIDGUARD Telemetry Export"],
+        ["Exported At", new Date().toISOString()],
+        ["Simulation Leak", getActiveLeak() || "None"],
+        ["Configured Intensity", typeof L !== "undefined" ? L.k : ""],
+        [],
+        ["Junction ID", "Baseline Pressure", "Available Simulation Data"]
+      ];
+
+      N.forEach(function (node) {
+        const id = node[0];
+        const baseline = node[3];
+        let reading = "";
+
+        if (
+          typeof L !== "undefined" &&
+          L &&
+          L.vals &&
+          Object.prototype.hasOwnProperty.call(L.vals, id)
+        ) {
+          reading = L.vals[id];
+        }
+
+        rows.push([id, baseline, reading]);
+      });
+
+      downloadCSV(rows);
+
+      exportStatus.textContent =
+        "CSV report generated from the available simulation data.";
+      exportStatus.style.color = "#4ade80";
+
+      addEvent("Telemetry CSV report exported.", "SUCCESS");
+    } catch (error) {
+      exportStatus.textContent = "Export failed: " + error.message;
+      exportStatus.style.color = "#fb7185";
+      addEvent("Telemetry export failed: " + error.message, "ALERT");
+    }
+  });
+
+  if (clearLogBtn) {
+    clearLogBtn.addEventListener("click", function () {
+      events.length = 0;
+      renderLog();
+      addEvent("Activity history cleared.", "SUCCESS");
+    });
+  }
+
+  // Initialize the feature cards.
+  addEvent("GRIDGUARD advanced monitoring initialized.", "SUCCESS");
+  checkSimulationState();
+
+  // Detect simulation changes made by existing controls or refresh logic.
+  setInterval(checkSimulationState, 1000);
+
+})();
+
+
+(() => {
+  const cards = document.querySelectorAll(".gg-metric strong[data-count]");
+  const reducedMotion = window.matchMedia(
+    "(prefers-reduced-motion: reduce)"
+  ).matches;
+
+  function animateCounter(el) {
+    if (el.dataset.animated) return;
+    el.dataset.animated = "true";
+
+    const target = Number(el.dataset.count);
+    const decimals = Number(el.dataset.decimals || 0);
+
+    if (reducedMotion) {
+      el.textContent = target.toFixed(decimals);
+      return;
+    }
+
+    const duration = 1200;
+    const start = performance.now();
+
+    function frame(now) {
+      const progress = Math.min((now - start) / duration, 1);
+      const eased = 1 - Math.pow(1 - progress, 3);
+
+      el.textContent = (target * eased).toFixed(decimals);
+
+      if (progress < 1) requestAnimationFrame(frame);
+    }
+
+    requestAnimationFrame(frame);
+  }
+
+  if ("IntersectionObserver" in window) {
+    const observer = new IntersectionObserver(entries => {
+      entries.forEach(entry => {
+        if (entry.isIntersecting) {
+          animateCounter(entry.target);
+          observer.unobserve(entry.target);
+        }
+      });
+    }, { threshold: 0.4 });
+
+    cards.forEach(card => observer.observe(card));
+  } else {
+    cards.forEach(animateCounter);
+  }
+})();
+
+</script>
+</body>
+</html>

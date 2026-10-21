@@ -1,0 +1,7 @@
+Flask
+flask-cors
+numpy
+pandas
+networkx
+asyncua
+google-genai

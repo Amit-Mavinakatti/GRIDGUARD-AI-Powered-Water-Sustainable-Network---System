@@ -1,0 +1,1222 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <meta name="theme-color" content="#080f1d">
+    <meta name="description" content="GRIDGUARD — AI-powered water pipeline monitoring and leak detection simulation.">
+
+    <title>GRIDGUARD | Intelligent Water Infrastructure</title>
+
+    <link rel="stylesheet" href="./style.css">
+    <script src="/script.js" defer></script>
+</head>
+
+<body>
+    <div class="app-shell">
+
+        <!-- SIDEBAR -->
+        <aside class="sidebar" id="sidebar">
+            <a class="brand" href="#overview" aria-label="GRIDGUARD home">
+                <span class="brand-mark">
+                    <svg viewBox="0 0 48 48" aria-hidden="true">
+                        <path d="M24 4C19 13 9 23 9 31a15 15 0 0 0 30 0C39 23 29 13 24 4Z"
+                              fill="none" stroke="currentColor" stroke-width="3"/>
+                        <path d="M16 30a8 8 0 0 0 8 8"
+                              fill="none" stroke="currentColor" stroke-width="3"
+                              stroke-linecap="round"/>
+                        <path d="m19 23 5 5 8-9"
+                              fill="none" stroke="#5de4c7" stroke-width="3"
+                              stroke-linecap="round" stroke-linejoin="round"/>
+                    </svg>
+                </span>
+
+                <span class="brand-copy">
+                    <strong>GRIDGUARD</strong>
+                    <small>WATER INTELLIGENCE</small>
+                </span>
+            </a>
+
+            <div class="workspace-label">WORKSPACE</div>
+
+            <nav class="nav-menu" aria-label="Main navigation">
+                <a class="nav-link active" href="#overview" data-section="overview">
+                    <span class="nav-icon">◫</span>
+                    <span>Overview</span>
+                </a>
+
+                <a class="nav-link" href="#network" data-section="network">
+                    <span class="nav-icon">⌘</span>
+                    <span>Pipeline Network</span>
+                </a>
+
+                <a class="nav-link" href="#monitoring" data-section="monitoring">
+                    <span class="nav-icon">⌁</span>
+                    <span>Live Monitoring</span>
+                </a>
+
+                <a class="nav-link" href="#scada" data-section="scada">
+                    <span class="nav-icon">⌖</span>
+                    <span>SCADA & datasets</span>
+                </a>
+
+                <a class="nav-link" href="#detection" data-section="detection">
+                    <span class="nav-icon">◎</span>
+                    <span>Leak Detection</span>
+                    <span class="nav-count" id="navLeakCount">0</span>
+                </a>
+
+                <a class="nav-link" href="#analytics" data-section="analytics">
+                    <span class="nav-icon">▥</span>
+                    <span>Analytics</span>
+                </a>
+
+                <a class="nav-link" href="#alerts" data-section="alerts">
+                    <span class="nav-icon">♧</span>
+                    <span>Alerts & Events</span>
+                </a>
+            </nav>
+
+            <div class="sidebar-bottom">
+                <div class="connection-card">
+                    <div class="connection-heading">
+                        <span class="status-dot" id="sidebarStatusDot"></span>
+                        <strong id="connectionLabel">Connecting...</strong>
+                    </div>
+
+                    <p id="connectionDescription">
+                        Checking the Python API
+                    </p>
+
+                    <span class="environment-tag">
+                        <span class="tiny-dot"></span>
+                        SIMULATION ENVIRONMENT
+                    </span>
+                </div>
+
+                <div class="sidebar-footer">
+                    <span>GRIDGUARD</span>
+                    <span>HACKATHON EDITION</span>
+                </div>
+            </div>
+        </aside>
+
+        <!-- MAIN APPLICATION -->
+        <main class="main-content">
+
+            <!-- TOP BAR -->
+            <header class="topbar">
+                <div class="topbar-left">
+                    <button class="icon-button mobile-menu-button"
+                            id="menuToggle"
+                            aria-label="Toggle navigation"
+                            aria-expanded="false">
+                        ☰
+                    </button>
+
+                    <div class="breadcrumb">
+                        <span>Infrastructure</span>
+                        <span class="breadcrumb-separator">/</span>
+                        <strong id="breadcrumbCurrent">Overview</strong>
+                    </div>
+                </div>
+
+                <div class="topbar-actions">
+                    <div class="live-indicator">
+                        <span class="status-dot" id="topStatusDot"></span>
+                        <span id="topStatusText">Connecting</span>
+                    </div>
+
+                    <span class="topbar-divider"></span>
+
+                    <div class="user-profile">
+                        <div class="avatar">GG</div>
+                        <div class="user-details">
+                            <strong>Operations Team</strong>
+                            <small>Water Infrastructure</small>
+                        </div>
+                    </div>
+                </div>
+            </header>
+
+            <!-- PAGE CONTENT -->
+            <div class="page-content">
+
+                <!-- PAGE INTRO -->
+                <section class="page-intro" id="overview">
+                    <div>
+                        <div class="eyebrow">
+                            <span class="eyebrow-line"></span>
+                            INTELLIGENT WATER INFRASTRUCTURE
+                        </div>
+
+                        <h1>Network <span class="text-gradient">Command Center</span></h1>
+
+                        <p class="page-description">
+                            Monitor pipeline health, investigate pressure anomalies,
+                            and simulate hidden water leaks from one unified workspace.
+                        </p>
+                    </div>
+
+                    <div class="intro-actions">
+                        <div class="last-updated">
+                            <span class="last-updated-label">LAST DATA UPDATE</span>
+                            <strong id="lastUpdated">Waiting for data...</strong>
+                        </div>
+
+                        <button class="button button-secondary" id="refreshButton">
+                            <span class="button-icon">↻</span>
+                            Refresh data
+                        </button>
+                    </div>
+                </section>
+
+                <!-- SIMULATION NOTICE -->
+                <section class="simulation-banner">
+                    <div class="simulation-banner-icon">ⓘ</div>
+                    <div>
+                        <strong>Simulation environment</strong>
+                        <p>
+                            Readings are generated by the GRIDGUARD Python simulator.
+                            They are not measurements from physical water sensors.
+                        </p>
+                    </div>
+                    <span class="simulation-badge">DEMO MODE</span>
+                </section>
+
+                <!-- FEATURED AI INCIDENT CO-PILOT CARD -->
+                <section class="panel ai-copilot-card">
+                    <div class="panel-header ai-header-flex">
+                        <div class="ai-title-group">
+                            <span class="ai-avatar">✦</span>
+                            <div>
+                                <div class="panel-kicker">GEMINI AI POWERED</div>
+                                <h2>GRIDGUARD AI Incident Co-Pilot</h2>
+                                <p class="panel-description">
+                                    Instant neural evaluation of pressure drops and pipeline telemetry.
+                                </p>
+                            </div>
+                        </div>
+                        <button id="aiAnalyzeBtn" class="button button-primary button-ai-sparkle" onclick="runAiDiagnosis()">
+                            <span>✨ Analyze Active Telemetry</span>
+                        </button>
+                    </div>
+
+                    <div class="ai-body">
+                        <!-- Idle State Banner -->
+                        <div id="aiIdleBanner" class="ai-idle-banner">
+                            <span class="ai-info-icon">ⓘ</span>
+                            <span>Click <strong>"Analyze Active Telemetry"</strong> to generate a real-time AI diagnosis of current pipeline anomalies.</span>
+                        </div>
+
+                        <!-- Loader -->
+                        <div id="aiLoader" class="ai-loader" style="display: none;">
+                            <div class="ai-spinner"></div>
+                            <span>Evaluating live SCADA & telemetry streams with Gemini AI...</span>
+                        </div>
+
+                        <!-- AI Response Container -->
+                        <div id="aiResponseBox" class="ai-response-grid" style="display: none;">
+                            <div class="ai-result-header">
+                                <span class="ai-result-label">URGENCY EVALUATION:</span>
+                                <span id="aiUrgencyBadge" class="urgency-pill">STABLE</span>
+                            </div>
+
+                            <div class="ai-details-grid">
+                                <div class="ai-detail-card">
+                                    <h4><span class="ai-icon">🔍</span> Diagnostic Summary</h4>
+                                    <p id="aiDiagnosisText">—</p>
+                                </div>
+                                <div class="ai-detail-card">
+                                    <h4><span class="ai-icon">🛠️</span> Recommended Field Actions</h4>
+                                    <ul id="aiActionsList"></ul>
+                                </div>
+                            </div>
+                        </div>
+                    </div>
+                </section>
+
+                <!-- KPI CARDS -->
+                <section class="metrics-grid" aria-label="Network summary">
+
+                    <article class="metric-card">
+                        <div class="metric-topline">
+                            <span class="metric-label">NETWORK JUNCTIONS</span>
+                            <span class="metric-icon metric-icon-blue">⌘</span>
+                        </div>
+
+                        <div class="metric-value" id="junctionCount">—</div>
+
+                        <div class="metric-foot">
+                            <span class="metric-neutral">●</span>
+                            <span>Connected monitoring points</span>
+                        </div>
+
+                        <div class="metric-decoration decoration-blue"></div>
+                    </article>
+
+                    <article class="metric-card">
+                        <div class="metric-topline">
+                            <span class="metric-label">PIPELINE SEGMENTS</span>
+                            <span class="metric-icon metric-icon-purple">⌁</span>
+                        </div>
+
+                        <div class="metric-value" id="pipeCount">—</div>
+
+                        <div class="metric-foot">
+                            <span class="metric-neutral">●</span>
+                            <span>Registered pipe connections</span>
+                        </div>
+
+                        <div class="metric-decoration decoration-purple"></div>
+                    </article>
+
+                    <article class="metric-card">
+                        <div class="metric-topline">
+                            <span class="metric-label">AVERAGE PRESSURE</span>
+                            <span class="metric-icon metric-icon-teal">↗</span>
+                        </div>
+
+                        <div class="metric-value">
+                            <span id="averagePressure">—</span>
+                            <span class="metric-unit">PSI*</span>
+                        </div>
+
+                        <div class="metric-foot">
+                            <span class="metric-neutral">●</span>
+                            <span>Simulated pressure reading</span>
+                        </div>
+
+                        <div class="metric-decoration decoration-teal"></div>
+                    </article>
+
+                    <article class="metric-card">
+                        <div class="metric-topline">
+                            <span class="metric-label">ACTIVE LEAKS</span>
+                            <span class="metric-icon metric-icon-red">!</span>
+                        </div>
+
+                        <div class="metric-value" id="activeLeakCount">0</div>
+
+                        <div class="metric-foot">
+                            <span class="metric-neutral" id="leakStatusDot">●</span>
+                            <span id="leakStatusText">No simulated leaks</span>
+                        </div>
+
+                        <div class="metric-decoration decoration-red"></div>
+                    </article>
+
+                </section>
+
+                <!-- NETWORK OVERVIEW -->
+                <section class="content-grid network-overview-grid" id="network">
+
+                    <article class="panel network-panel">
+                        <div class="panel-header">
+                            <div>
+                                <div class="panel-kicker">INFRASTRUCTURE MAP</div>
+                                <h2>Pipeline topology</h2>
+                                <p class="panel-description">
+                                    Select a pipe to inspect its simulation status.
+                                </p>
+                            </div>
+
+                            <div class="panel-header-actions">
+                                <span class="status-pill">
+                                    <span class="status-dot"></span>
+                                    <span id="networkHealthLabel">Loading</span>
+                                </span>
+
+                                <button class="icon-button"
+                                        id="fitNetworkButton"
+                                        title="Reset network view"
+                                        aria-label="Reset network view">
+                                    ⤢
+                                </button>
+                            </div>
+                        </div>
+
+                        <div class="network-map-wrap">
+                            <div class="map-grid-background"></div>
+
+                            <div class="map-watermark">GRIDGUARD / NETWORK 001</div>
+
+                            <svg id="networkSvg"
+                                 class="network-svg"
+                                 viewBox="0 0 780 430"
+                                 role="img"
+                                 aria-label="Interactive simulated water pipeline network">
+                                <text x="50" y="48" text-anchor="middle"
+                                      fill="currentColor" font-size="4">
+                                    Waiting for pipeline data...
+                                </text>
+                            </svg>
+
+                            <div class="map-legend">
+                                <span><i class="legend-line legend-normal"></i> Normal pipe</span>
+                                <span><i class="legend-line legend-leak"></i> Simulated leak</span>
+                                <span><i class="legend-node"></i> Junction</span>
+                            </div>
+                        </div>
+
+                        <div class="network-footer">
+                            <div>
+                                <span class="footer-label">NETWORK STATUS</span>
+                                <strong id="networkStatusText">Awaiting API</strong>
+                            </div>
+
+                            <div>
+                                <span class="footer-label">ACTIVE CONNECTIONS</span>
+                                <strong id="activeConnections">—</strong>
+                            </div>
+
+                            <button class="text-button" id="viewNetworkDetails">
+                                View details →
+                            </button>
+                        </div>
+                    </article>
+
+                    <!-- SIMULATOR CONTROL PANEL -->
+                    <article class="panel simulator-panel">
+                        <div class="panel-header">
+                            <div>
+                                <div class="panel-kicker">TEST ENVIRONMENT</div>
+                                <h2>Leak simulator</h2>
+                                <p class="panel-description">
+                                    Create a controlled leak scenario.
+                                </p>
+                            </div>
+
+                            <span class="control-icon">⌁</span>
+                        </div>
+
+                        <div class="simulator-status" id="simulatorStatus">
+                            <span class="simulator-status-icon">✓</span>
+                            <div>
+                                <strong>Network ready</strong>
+                                <p>Configure a scenario below.</p>
+                            </div>
+                        </div>
+
+                        <form id="leakForm" class="simulator-form">
+
+                            <label for="pipeSelect">Target pipe segment</label>
+                            <select id="pipeSelect" name="pipe" required>
+                                <option value="">Loading pipeline...</option>
+                            </select>
+
+                            <div class="form-label-row">
+                                <label for="severitySlider">Leak severity</label>
+                                <strong id="severityValue">50%</strong>
+                            </div>
+
+                            <input id="severitySlider"
+                                   name="severity"
+                                   type="range"
+                                   min="10"
+                                   max="100"
+                                   step="5"
+                                   value="50">
+
+                            <div class="range-labels">
+                                <span>Minor · 10%</span>
+                                <span>Critical · 100%</span>
+                            </div>
+
+                            <div class="severity-preview">
+                                <span class="severity-preview-dot"></span>
+                                <span id="severityDescription">
+                                    Moderate simulated leak
+                                </span>
+                            </div>
+
+                            <button class="button button-primary button-full"
+                                    id="simulateButton"
+                                    type="submit">
+                                <span>⚡</span>
+                                Simulate leak
+                            </button>
+
+                            <button class="button button-secondary button-full"
+                                    id="resetButton"
+                                    type="button">
+                                ↺ Reset network
+                            </button>
+                        </form>
+
+                        <p class="form-footnote">
+                            Actions modify the running Python simulation.
+                            They do not control physical infrastructure.
+                        </p>
+                    </article>
+                </section>
+
+                <!-- MONITORING -->
+                <section class="panel monitoring-panel" id="monitoring">
+                    <div class="panel-header">
+                        <div>
+                            <div class="panel-kicker">SENSOR SIMULATION</div>
+                            <h2>Live monitoring</h2>
+                            <p class="panel-description">
+                                Inspect pressure and flow values at every junction.
+                            </p>
+                        </div>
+
+                        <div class="monitoring-controls">
+                            <label class="search-field">
+                                <span>⌕</span>
+                                <input id="junctionSearch"
+                                       type="search"
+                                       placeholder="Search junction..."
+                                       aria-label="Search junctions">
+                            </label>
+
+                            <select id="junctionStatusFilter"
+                                    aria-label="Filter junction status">
+                                <option value="all">All junctions</option>
+                                <option value="normal">Normal</option>
+                                <option value="warning">Warning</option>
+                            </select>
+                        </div>
+                    </div>
+
+                    <div class="table-wrap">
+                        <table class="data-table">
+                            <thead>
+                                <tr>
+                                    <th>JUNCTION</th>
+                                    <th>PRESSURE</th>
+                                    <th>BASELINE</th>
+                                    <th>FLOW</th>
+                                    <th>VARIANCE</th>
+                                    <th>STATUS</th>
+                                </tr>
+                            </thead>
+
+                            <tbody id="monitoringTableBody">
+                                <tr>
+                                    <td colspan="6" class="empty-state">
+                                        Waiting for Python telemetry...
+                                    </td>
+                                </tr>
+                            </tbody>
+                        </table>
+                    </div>
+
+                    <div class="table-footer">
+                        <span id="monitoringRecordCount">0 monitoring points</span>
+                        <span>All readings are simulated</span>
+                    </div>
+                </section>
+
+                <!-- SCADA AND LEAKDB DATA -->
+                <section class="content-grid scada-data-grid" id="scada">
+                    <article class="panel scada-panel">
+                        <div class="panel-header">
+                            <div>
+                                <div class="panel-kicker">OPC UA TELEMETRY</div>
+                                <h2>Live SCADA</h2>
+                                <p class="panel-description">
+                                    Sensor values read from the GRIDGUARD OPC UA simulator.
+                                </p>
+                            </div>
+
+                            <span class="status-pill scada-offline" id="scadaConnectionPill">
+                                <span class="status-dot"></span>
+                                <span id="scadaConnectionLabel">Checking</span>
+                            </span>
+                        </div>
+
+                        <div class="scada-source-row">
+                            <span class="scada-source-icon">⌁</span>
+                            <div>
+                                <strong id="scadaSourceLabel">OPC UA simulator</strong>
+                                <span id="scadaUpdatedAt">Waiting for SCADA data...</span>
+                            </div>
+                        </div>
+
+                        <div class="table-wrap">
+                            <table class="data-table scada-table">
+                                <thead>
+                                    <tr>
+                                        <th>SENSOR</th>
+                                        <th>PRESSURE</th>
+                                        <th>FLOW</th>
+                                        <th>STATE</th>
+                                    </tr>
+                                </thead>
+                                <tbody id="scadaTableBody">
+                                    <tr>
+                                        <td colspan="4" class="empty-state">
+                                            Connecting to OPC UA simulator...
+                                        </td>
+                                    </tr>
+                                </tbody>
+                            </table>
+                        </div>
+
+                        <div class="scada-footer">
+                            <span>ENDPOINT</span>
+                            <code id="scadaEndpoint">opc.tcp://127.0.0.1:4840/gridguard/</code>
+                        </div>
+                    </article>
+
+                    <article class="panel dataset-panel">
+                        <div class="panel-header">
+                            <div>
+                                <div class="panel-kicker">BUNDLED DATA</div>
+                                <h2>LeakDB datasets</h2>
+                                <p class="panel-description">
+                                    Inspect the included LeakDB Scenario 6 labels and sample readings.
+                                </p>
+                            </div>
+                            <span class="dataset-mark">CSV</span>
+                        </div>
+
+                        <div class="dataset-controls">
+                            <label for="datasetSelect">Dataset</label>
+                            <div class="dataset-select-row">
+                                <select id="datasetSelect" aria-label="Choose a dataset">
+                                    <option value="">Loading datasets...</option>
+                                </select>
+                                <button class="button button-secondary" id="loadDatasetButton" type="button">
+                                    Load
+                                </button>
+                            </div>
+                        </div>
+
+                        <div class="dataset-summary" id="datasetSummary" aria-live="polite">
+                            Choose a dataset to inspect its rows and columns.
+                        </div>
+
+                        <div class="table-wrap dataset-table-wrap">
+                            <table class="data-table dataset-table">
+                                <thead id="datasetPreviewHead"></thead>
+                                <tbody id="datasetPreviewBody">
+                                    <tr>
+                                        <td class="empty-state">Dataset preview will appear here.</td>
+                                    </tr>
+                                </tbody>
+                            </table>
+                        </div>
+
+                        <p class="dataset-note" id="datasetNote">
+                            LeakDB labels identify leak/no-leak periods; they are separate from live SCADA telemetry.
+                        </p>
+                    </article>
+                </section>
+
+                <!-- DETECTION AND ANALYTICS -->
+                <section class="content-grid lower-grid">
+
+                    <article class="panel detection-panel" id="detection">
+                        <div class="panel-header">
+                            <div>
+                                <div class="panel-kicker">INVESTIGATION QUEUE</div>
+                                <h2>Leak detection results</h2>
+                                <p class="panel-description">
+                                    Pipe segments flagged by the current Python detector.
+                                </p>
+                            </div>
+
+                            <span class="result-count" id="detectionResultCount">0 results</span>
+                        </div>
+
+                        <div class="detection-list" id="detectionList">
+                            <div class="empty-state">
+                                No detection results received yet.
+                            </div>
+                        </div>
+
+                        <div class="panel-bottom-note">
+                            <span class="info-icon">ⓘ</span>
+                            The current baseline detector reads simulated leak labels.
+                            Its results are not independent AI predictions.
+                        </div>
+                    </article>
+
+                    <article class="panel analytics-panel" id="analytics">
+                        <div class="panel-header">
+                            <div>
+                                <div class="panel-kicker">SYSTEM TELEMETRY</div>
+                                <h2>Pressure profile</h2>
+                                <p class="panel-description">
+                                    Current readings versus healthy baseline.
+                                </p>
+                            </div>
+
+                            <span class="chart-unit">PSI*</span>
+                        </div>
+
+                        <div class="chart-legend">
+                            <span><i class="chart-legend-dot chart-dot-current"></i> Current</span>
+                            <span><i class="chart-legend-dot chart-dot-baseline"></i> Baseline</span>
+                        </div>
+
+                        <div class="chart-container" id="pressureChartContainer">
+                            <canvas id="pressureChart"
+                                    aria-label="Pressure comparison chart"
+                                    role="img"></canvas>
+                        </div>
+
+                        <div class="chart-summary">
+                            <div>
+                                <span class="chart-summary-label">CURRENT AVG.</span>
+                                <strong id="chartCurrentAverage">—</strong>
+                            </div>
+
+                            <div>
+                                <span class="chart-summary-label">BASELINE AVG.</span>
+                                <strong id="chartBaselineAverage">—</strong>
+                            </div>
+
+                            <div>
+                                <span class="chart-summary-label">DIFFERENCE</span>
+                                <strong id="chartDifference">—</strong>
+                            </div>
+                        </div>
+                    </article>
+                </section>
+
+                <!-- ALERTS -->
+                <section class="panel alerts-panel" id="alerts">
+                    <div class="panel-header">
+                        <div>
+                            <div class="panel-kicker">EVENT CENTER</div>
+                            <h2>Alerts & system events</h2>
+                            <p class="panel-description">
+                                Review recent dashboard and simulation activity.
+                            </p>
+                        </div>
+
+                        <button class="button button-secondary"
+                                id="clearAlertsButton">
+                            Clear events
+                        </button>
+                    </div>
+
+                    <div class="alert-filters">
+                        <button class="filter-chip active"
+                                data-alert-filter="all">All events</button>
+                        <button class="filter-chip"
+                                data-alert-filter="leak">Leak events</button>
+                        <button class="filter-chip"
+                                data-alert-filter="system">System events</button>
+                    </div>
+
+                    <div class="event-list" id="eventList">
+                        <div class="empty-state">
+                            System events will appear here.
+                        </div>
+                    </div>
+                </section>
+
+                <!-- FOOTER -->
+                <footer class="page-footer">
+                    <div class="footer-brand">
+                        <span class="footer-brand-mark">◆</span>
+                        <strong>GRIDGUARD</strong>
+                        <span>Intelligent Water Infrastructure</span>
+                    </div>
+
+                    <div class="footer-disclaimer">
+                        Educational prototype · Simulated data · Not for operational decisions
+                    </div>
+
+                    <button class="text-button" id="apiStatusButton">
+                        API status: <span id="footerApiStatus">Checking...</span>
+                    </button>
+                </footer>
+
+            </div>
+        </main>
+    </div>
+
+    <!-- PIPE DETAILS MODAL -->
+    <div class="modal-backdrop hidden" id="pipeModalBackdrop">
+        <section class="modal"
+                 role="dialog"
+                 aria-modal="true"
+                 aria-labelledby="pipeModalTitle">
+
+            <div class="modal-header">
+                <div>
+                    <div class="panel-kicker">SEGMENT INSPECTOR</div>
+                    <h2 id="pipeModalTitle">Pipe details</h2>
+                </div>
+
+                <button class="icon-button"
+                        id="closePipeModal"
+                        aria-label="Close pipe details">✕</button>
+            </div>
+
+            <div id="pipeModalContent">
+                Select a pipe on the network map to inspect it.
+            </div>
+
+            <div class="modal-footer">
+                <button class="button button-secondary"
+                        id="closePipeModalButton">Close</button>
+            </div>
+        </section>
+    </div>
+
+    <!-- GRIDGUIDE INSTANT ASSISTANT -->
+    <button class="assistant-launcher" id="assistantLauncher" type="button"
+            aria-label="Open GridGuide assistant" aria-expanded="false"
+            aria-controls="assistantPanel">
+        <span class="assistant-launcher-icon" aria-hidden="true">✦</span>
+        <span class="assistant-launcher-copy"><strong>Ask GridGuide</strong><small>Instant network help</small></span>
+        <span class="assistant-online-dot" aria-hidden="true"></span>
+    </button>
+
+    <section class="assistant-panel" id="assistantPanel" aria-label="GridGuide assistant" hidden>
+        <header class="assistant-header">
+            <div class="assistant-avatar" aria-hidden="true">✦</div>
+            <div class="assistant-heading"><strong>GridGuide</strong><span><i></i> Ready · uses live dashboard context</span></div>
+            <button class="assistant-close" id="assistantClose" type="button" aria-label="Close assistant">×</button>
+        </header>
+        <div class="assistant-context" id="assistantContext"><span>◉</span> Checking your network…</div>
+        <div class="assistant-messages" id="assistantMessages" role="log" aria-live="polite" aria-relevant="additions">
+            <article class="assistant-message assistant-message-bot">
+                <span class="assistant-message-label">GRIDGUIDE · INSTANT ASSISTANT</span>
+                <p>Hi! Ask me about a leak, pressure, a pipe, SCADA, or the LeakDB data. I’ll use the latest dashboard readings to explain what’s happening.</p>
+            </article>
+        </div>
+        <div class="assistant-prompts" aria-label="Suggested questions">
+            <button type="button" data-assistant-prompt="What needs attention right now?">What needs attention?</button>
+            <button type="button" data-assistant-prompt="Explain the pressure readings">Explain pressure</button>
+            <button type="button" data-assistant-prompt="How do I read the pipeline map?">Read the map</button>
+            <button type="button" data-assistant-prompt="What is LeakDB?">What is LeakDB?</button>
+        </div>
+        <form class="assistant-compose" id="assistantForm">
+            <label class="sr-only" for="assistantInput">Ask GridGuide a question</label>
+            <input id="assistantInput" name="question" type="text" maxlength="500"
+                   placeholder="Ask anything about this network…" autocomplete="off" required>
+            <button type="submit" aria-label="Send question">↑</button>
+        </form>
+        <div class="assistant-footnote">Fast answers grounded in this simulation · Not for operating real infrastructure</div>
+    </section>
+
+    <!-- TOAST NOTIFICATIONS -->
+    <div class="toast-container"
+         id="toastContainer"
+         aria-live="polite"
+         aria-atomic="false"></div>
+
+         
+
+         
+
+<script>
+/* ==========================================================
+   GRIDGUARD // COMMAND CENTER ENHANCEMENT ENGINE
+   Visual enhancement only. Existing API and app logic remain.
+   ========================================================== */
+(() => {
+    "use strict";
+
+    const reducedMotion = window.matchMedia(
+        "(prefers-reduced-motion: reduce)"
+    ).matches;
+
+    const $ = (selector, root = document) =>
+        root.querySelector(selector);
+
+    const $$ = (selector, root = document) =>
+        [...root.querySelectorAll(selector)];
+
+    /* ------------------------------------------------------
+       1. TOP-OF-PAGE SCROLL PROGRESS
+       ------------------------------------------------------ */
+    const progress = document.createElement("div");
+    progress.id = "ggTopProgress";
+    progress.setAttribute("aria-hidden", "true");
+    document.body.appendChild(progress);
+
+    let scrollTicking = false;
+
+    function updateScrollProgress() {
+        const scrollable =
+            document.documentElement.scrollHeight - window.innerHeight;
+
+        const percentage = scrollable > 0
+            ? (window.scrollY / scrollable) * 100
+            : 0;
+
+        progress.style.width =
+            `${Math.max(0, Math.min(100, percentage))}%`;
+
+        scrollTicking = false;
+    }
+
+    window.addEventListener("scroll", () => {
+        if (!scrollTicking) {
+            window.requestAnimationFrame(updateScrollProgress);
+            scrollTicking = true;
+        }
+    }, { passive: true });
+
+    updateScrollProgress();
+
+    /* ------------------------------------------------------
+       2. SCROLL REVEAL
+       Only reveal content after it enters the viewport.
+       ------------------------------------------------------ */
+    const revealSelectors = [
+        ".page-intro",
+        ".simulation-banner",
+        ".ai-copilot-card",
+        ".metrics-grid",
+        ".network-overview-grid",
+        ".monitoring-panel",
+        ".scada-data-grid",
+        ".lower-grid",
+        ".alerts-panel",
+        ".page-footer"
+    ];
+
+    const revealElements = revealSelectors
+        .flatMap(selector => $$(selector))
+        .filter((element, index, array) =>
+            array.indexOf(element) === index
+        );
+
+    if ("IntersectionObserver" in window && !reducedMotion) {
+        const revealObserver = new IntersectionObserver(entries => {
+            entries.forEach(entry => {
+                if (entry.isIntersecting) {
+                    entry.target.classList.add("gg-visible");
+                    revealObserver.unobserve(entry.target);
+                }
+            });
+        }, {
+            threshold: 0.08,
+            rootMargin: "0px 0px -35px 0px"
+        });
+
+        revealElements.forEach(element => {
+            element.classList.add("gg-reveal");
+            revealObserver.observe(element);
+        });
+    } else {
+        revealElements.forEach(element => {
+            element.classList.add("gg-visible");
+        });
+    }
+
+    /* ------------------------------------------------------
+       3. KPI CHANGE HIGHLIGHTS
+       Never overwrite the values supplied by your API.
+       ------------------------------------------------------ */
+    const metricSelectors = [
+        "#junctionCount",
+        "#pipeCount",
+        "#averagePressure",
+        "#activeLeakCount",
+        "#activeConnections",
+        "#chartCurrentAverage",
+        "#chartBaselineAverage",
+        "#chartDifference"
+    ];
+
+    const metricElements = metricSelectors
+        .map(selector => $(selector))
+        .filter(Boolean);
+
+    const previousMetricValues = new WeakMap();
+
+    metricElements.forEach(element => {
+        previousMetricValues.set(element, element.textContent.trim());
+
+        const observer = new MutationObserver(() => {
+            const newValue = element.textContent.trim();
+            const oldValue = previousMetricValues.get(element);
+
+            if (newValue !== oldValue) {
+                previousMetricValues.set(element, newValue);
+
+                element.classList.remove("gg-value-updated");
+
+                // Restart the visual animation without changing the value.
+                void element.offsetWidth;
+
+                if (!reducedMotion) {
+                    element.classList.add("gg-value-updated");
+                }
+            }
+        });
+
+        observer.observe(element, {
+            childList: true,
+            characterData: true,
+            subtree: true
+        });
+    });
+
+    /* ------------------------------------------------------
+       4. SVG PIPELINE GRAPH ENHANCEMENT
+       Works with graph elements created by the existing app.
+       Does not create fake junctions or alter telemetry.
+       ------------------------------------------------------ */
+    const networkSvg = $("#networkSvg");
+
+    function hasLeakHint(element) {
+        const description = [
+            element.getAttribute("class") || "",
+            element.getAttribute("id") || "",
+            element.getAttribute("data-status") || "",
+            element.getAttribute("aria-label") || ""
+        ].join(" ").toLowerCase();
+
+        return /\bleak\b|\bfault\b|\bcritical\b/.test(description);
+    }
+
+    function hasWarningHint(element) {
+        const description = [
+            element.getAttribute("class") || "",
+            element.getAttribute("data-status") || "",
+            element.getAttribute("aria-label") || ""
+        ].join(" ").toLowerCase();
+
+        return /\bwarning\b|\banomaly\b/.test(description);
+    }
+
+    function enhanceNetworkGraph() {
+        if (!networkSvg) return;
+
+        // A freshly rendered graph may replace the SVG's children.
+        // Reapply visual classes to the elements that currently exist.
+        const edges = $$("path, line, polyline", networkSvg);
+        const junctions = $$("circle", networkSvg);
+
+        edges.forEach(edge => {
+            if (edge.closest("defs")) return;
+
+            // Do not animate decorative text or background shapes.
+            const classText = (edge.getAttribute("class") || "").toLowerCase();
+            const idText = (edge.getAttribute("id") || "").toLowerCase();
+
+            if (/background|decoration|watermark/.test(classText + " " + idText)) {
+                return;
+            }
+
+            edge.classList.add("gg-pipe");
+
+            if (hasLeakHint(edge)) {
+                edge.classList.add("gg-pipe-leak");
+            } else {
+                edge.classList.remove("gg-pipe-leak");
+            }
+        });
+
+        junctions.forEach(node => {
+            if (node.closest("defs")) return;
+
+            node.classList.add("gg-junction");
+
+            if (hasLeakHint(node)) {
+                node.classList.add("gg-junction-leak");
+                node.classList.remove("gg-junction-warning");
+            } else if (hasWarningHint(node)) {
+                node.classList.add("gg-junction-warning");
+                node.classList.remove("gg-junction-leak");
+            } else {
+                node.classList.remove(
+                    "gg-junction-warning",
+                    "gg-junction-leak"
+                );
+            }
+        });
+    }
+
+    if (networkSvg) {
+        enhanceNetworkGraph();
+
+        // Existing code may redraw the SVG after each API response.
+        // Watch for those redraws and reapply presentation classes.
+        const graphObserver = new MutationObserver(() => {
+            window.requestAnimationFrame(enhanceNetworkGraph);
+        });
+
+        graphObserver.observe(networkSvg, {
+            childList: true,
+            subtree: true
+        });
+    }
+
+    /* ------------------------------------------------------
+       5. ACTIVE SECTION INDICATOR
+       Updates only navigation presentation and breadcrumb text.
+       ------------------------------------------------------ */
+    const navigationLinks = $$(".nav-link[data-section]");
+    const breadcrumb = $("#breadcrumbCurrent");
+
+    const sectionLabels = new Map(
+        navigationLinks.map(link => [
+            link.dataset.section,
+            link.querySelector("span:last-child")?.textContent.trim()
+                || link.textContent.trim()
+        ])
+    );
+
+    const trackedSections = [...sectionLabels.keys()]
+        .map(id => document.getElementById(id))
+        .filter(Boolean);
+
+    if ("IntersectionObserver" in window) {
+        const sectionObserver = new IntersectionObserver(entries => {
+            const visible = entries
+                .filter(entry => entry.isIntersecting)
+                .sort((a, b) => b.intersectionRatio - a.intersectionRatio)[0];
+
+            if (!visible) return;
+
+            const activeId = visible.target.id;
+
+            navigationLinks.forEach(link => {
+                const active = link.dataset.section === activeId;
+
+                link.classList.toggle("active", active);
+
+                if (active) {
+                    link.setAttribute("aria-current", "location");
+                } else {
+                    link.removeAttribute("aria-current");
+                }
+            });
+
+            if (breadcrumb && sectionLabels.has(activeId)) {
+                breadcrumb.textContent = sectionLabels.get(activeId);
+            }
+        }, {
+            rootMargin: "-18% 0px -68% 0px",
+            threshold: [0, 0.1, 0.3]
+        });
+
+        trackedSections.forEach(section => sectionObserver.observe(section));
+    }
+
+    /* ------------------------------------------------------
+       6. BUTTON MICRO-INTERACTIONS
+       No duplicate click handlers or API requests.
+       ------------------------------------------------------ */
+    $$(".button, .icon-button, .filter-chip").forEach(button => {
+        button.addEventListener("pointerdown", event => {
+            if (event.pointerType === "touch") return;
+            if (button.disabled) return;
+
+            button.style.setProperty("--gg-pointer-x", `${event.offsetX}px`);
+            button.style.setProperty("--gg-pointer-y", `${event.offsetY}px`);
+        });
+    });
+
+    /* ------------------------------------------------------
+       7. LIVE CONNECTION VISUAL STATUS
+       Reads the labels that your existing application updates.
+       Does not call the API or fabricate an online status.
+       ------------------------------------------------------ */
+    const connectionLabel = $("#connectionLabel");
+    const topStatusText = $("#topStatusText");
+    const sidebarDot = $("#sidebarStatusDot");
+    const topDot = $("#topStatusDot");
+
+    function updateConnectionAppearance() {
+        const label = [
+            connectionLabel?.textContent || "",
+            topStatusText?.textContent || ""
+        ].join(" ").toLowerCase();
+
+        const looksOffline = /offline|disconnected|failed|error|unavailable/.test(label);
+        const looksOnline = /connected|online|healthy|ready|live/.test(label)
+            && !looksOffline;
+
+        [sidebarDot, topDot].filter(Boolean).forEach(dot => {
+            dot.style.color = looksOffline
+                ? "var(--gg-red)"
+                : looksOnline
+                    ? "var(--gg-cyan)"
+                    : "var(--gg-amber)";
+        });
+    }
+
+    const statusObserver = new MutationObserver(updateConnectionAppearance);
+
+    [connectionLabel, topStatusText].filter(Boolean).forEach(element => {
+        statusObserver.observe(element, {
+            childList: true,
+            characterData: true,
+            subtree: true
+        });
+    });
+
+    updateConnectionAppearance();
+
+    /* ------------------------------------------------------
+       8. ACCESSIBLE HOVER LABELS FOR GRAPH
+       Preserve existing titles and tooltips.
+       ------------------------------------------------------ */
+    if (networkSvg) {
+        networkSvg.addEventListener("pointerover", event => {
+            const target = event.target.closest("path, line, polyline, circle");
+
+            if (!target || !networkSvg.contains(target)) return;
+
+            // Never replace an existing title or accessible label.
+            if (
+                !target.hasAttribute("title") &&
+                !target.hasAttribute("aria-label")
+            ) {
+                const label = target.getAttribute("data-label")
+                    || target.getAttribute("data-id");
+
+                if (label) {
+                    target.setAttribute("title", label);
+                }
+            }
+        });
+    }
+
+    /* ------------------------------------------------------
+       9. REDUCE MOTION WHEN REQUESTED BY THE USER
+       Also covers the preference changing while the page is open.
+       ------------------------------------------------------ */
+    const motionQuery = window.matchMedia("(prefers-reduced-motion: reduce)");
+
+    function applyMotionPreference() {
+        document.documentElement.dataset.motion = motionQuery.matches
+            ? "reduced"
+            : "full";
+    }
+
+    applyMotionPreference();
+
+    if (motionQuery.addEventListener) {
+        motionQuery.addEventListener("change", applyMotionPreference);
+    }
+
+    /* ------------------------------------------------------
+       10. INITIALIZE AFTER THE PAGE HAS SETTLED
+       ------------------------------------------------------ */
+    function initializeEnhancements() {
+        updateScrollProgress();
+        enhanceNetworkGraph();
+        updateConnectionAppearance();
+    }
+
+    if (document.readyState === "loading") {
+        document.addEventListener("DOMContentLoaded", initializeEnhancements, {
+            once: true
+        });
+    } else {
+        initializeEnhancements();
+    }
+
+    console.info(
+        "[GRIDGUARD] Visual enhancement layer initialized. " +
+        "Existing dashboard logic remains in control."
+    );
+})();
+</script>
+</body>
+</html>
