@@ -10,6 +10,8 @@ Explore a virtual water distribution network, simulate pipeline leaks, observe p
 > **Prototype notice:** GRIDGUARD is an educational simulation, not a production water-management or safety system. It does not connect to physical sensors or utility infrastructure. Dashboard readings, pipeline conditions, and leak scenarios are simulated. AI-generated diagnostic explanations may be inaccurate and must not be used for operational decisions.
 
 ---
+## Deployed Link : 
+Visit : https://gridguard-ai-powered-water-sustaina-mu.vercel.app/
 
 ## 🚀 Key Features
 
