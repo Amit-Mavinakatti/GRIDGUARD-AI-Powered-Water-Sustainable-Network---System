@@ -79,7 +79,6 @@ Watch the 36-second visual demonstration of GRIDGUARD's pipeline visualization a
   <br>
   <strong>▶ Click the poster to watch the GRIDGUARD demo</strong>
 </p>
-**[▶ Watch or download the GRIDGUARD demo](GRIDGUARD/assets/GRIDGUARD-project-demo.mp4)**
 
 *Format: MP4 · 1600 × 900 · H.264/AAC*
 
