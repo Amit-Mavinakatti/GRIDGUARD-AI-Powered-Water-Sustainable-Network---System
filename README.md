@@ -81,11 +81,6 @@ Watch the 36-second visual demonstration of GRIDGUARD's pipeline visualization a
 </p>
 
 
-
-## 🎬 GRIDGUARD Project Demo
-
-[![GRIDGUARD Project Demo](GRIDGUARD/assets/GRIDGUARD-project-demo-poster.png)](GRIDGUARD/assets/GRIDGUARD-project-demo.mp4)
-
 **▶ [Watch the full GRIDGUARD demo](GRIDGUARD/assets/GRIDGUARD-project-demo.mp4)**
 *Format: MP4 · 1600 × 900 · H.264/AAC*
 
