@@ -70,8 +70,15 @@ The included dataset preview is separate from the live simulated network.
 
 Watch the 36-second visual demonstration of GRIDGUARD's pipeline visualization and core features.
 
-[![Watch the GRIDGUARD project walkthrough](assets/GRIDGUARD-project-demo-poster.png](GRIDGUARD/assets/GRIDGUARD-project-demo.mp4)
+## 🎬 GRIDGUARD Project Demo
 
+<p align="center">
+  <a href="GRIDGUARD/assets/GRIDGUARD-project-demo.mp4">
+    <img src="GRIDGUARD/assets/GRIDGUARD-project-demo-poster.png" alt="GRIDGUARD Project Demo Poster" width="800">
+  </a>
+  <br>
+  <strong>▶ Click the poster to watch the GRIDGUARD demo</strong>
+</p>
 **[▶ Watch or download the GRIDGUARD demo](GRIDGUARD/assets/GRIDGUARD-project-demo.mp4)**
 
 *Format: MP4 · 1600 × 900 · H.264/AAC*
