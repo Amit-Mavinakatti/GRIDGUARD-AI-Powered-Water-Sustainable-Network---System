@@ -304,11 +304,25 @@ def dashboard():
 # AI DIAGNOSIS API (GEMINI INTEGRATION)
 # ==================================================
 
+
 @app.route("/api/ai-diagnose", methods=["POST"])
 def ai_diagnose():
-    """
-    Receives current active telemetry or anomaly context and runs a fast diagnosis via Gemini API.
-    """
+    """Analyze current GRIDGUARD telemetry using Gemini."""
+
+    api_key = (
+        os.environ.get("GEMINI_API_KEY")
+        or os.environ.get("GOOGLE_API_KEY")
+    )
+
+    if not api_key:
+        return jsonify({
+            "ok": False,
+            "error": (
+                "Gemini API key is missing. Configure "
+                "GEMINI_API_KEY in the deployment environment."
+            ),
+        }), 503
+
     telemetry_data = request.get_json(silent=True)
 
     if not telemetry_data:
@@ -317,48 +331,87 @@ def ai_diagnose():
             "summary": dashboard_data.get("summary"),
             "detections": dashboard_data.get("detections"),
             "telemetry": dashboard_data.get("telemetry"),
-            "active_leak": active_leak
+            "active_leak": active_leak,
         }
 
     prompt = f"""
-    You are an expert Hydraulic Systems AI Assistant for the GRIDGUARD Water Sustainability Network.
-    Analyze the following SCADA network telemetry and anomaly detection status:
+You are GRIDGUARD's hydraulic anomaly analysis assistant.
 
-    Telemetry Data:
-    {json.dumps(telemetry_data, indent=2)}
+Analyze the following telemetry from a water-network simulator.
+The readings may be simulated, so do not claim that a real
+physical leak has been confirmed.
 
-    Provide a concise, practical diagnosis for field operators.
-    Respond strictly in valid JSON format using these exact key names:
-    - "diagnosis": A concise summary of what occurred (e.g. major burst on Pipe J1-J2, pressure drop at J1, or normal network behavior).
-    - "recommended_actions": A list of 2 to 3 concise steps for field operators.
-    - "urgency": "CRITICAL", "WARNING", or "STABLE".
-    """
+Telemetry:
+{json.dumps(telemetry_data, indent=2)}
+
+Return valid JSON with exactly these keys:
+- diagnosis: concise evidence-based explanation
+- recommended_actions: list of 2 to 3 practical steps
+- urgency: CRITICAL, WARNING, or STABLE
+
+Base the diagnosis on the supplied data. If the evidence is
+insufficient, explicitly state that uncertainty.
+Do not invent measurements or claim unsupported leak locations.
+"""
 
     try:
+        client = genai.Client(api_key=api_key)
+
         response = client.models.generate_content(
             model="gemini-3.8-flash",
             contents=prompt,
             config=types.GenerateContentConfig(
                 response_mime_type="application/json",
-                temperature=0.2
-            )
+                temperature=0.2,
+            ),
         )
-        parsed_result = json.loads(response.text)
-        return jsonify({"ok": True, "data": parsed_result})
-    except Exception as e:
-        app.logger.exception("Gemini AI Diagnosis failed")
+
+        if not response.text:
+            app.logger.error("Gemini returned an empty response.")
+            return jsonify({
+                "ok": False,
+                "error": "Gemini returned an empty response.",
+            }), 502
+
+        result = json.loads(response.text)
+
+        # Validate the structure before returning a successful result.
+        if not isinstance(result, dict):
+            raise ValueError("Gemini response must be a JSON object.")
+
+        required_keys = {
+            "diagnosis",
+            "recommended_actions",
+            "urgency",
+        }
+
+        if not required_keys.issubset(result):
+            raise ValueError("Gemini response is missing required fields.")
+
+        if not isinstance(result["diagnosis"], str):
+            raise ValueError("Invalid diagnosis field.")
+
+        if not isinstance(result["recommended_actions"], list):
+            raise ValueError("Invalid recommended_actions field.")
+
+        if result["urgency"] not in {"CRITICAL", "WARNING", "STABLE"}:
+            raise ValueError("Invalid urgency value.")
+
         return jsonify({
             "ok": True,
-            "data": {
-                "diagnosis": "Automatic fallback: Anomaly detected in telemetry stream. Rapid pressure shift recorded.",
-                "recommended_actions": [
-                    "Inspect isolation valves upstream of affected pipe nodes.",
-                    "Verify physical pressure gauge readings manually."
-                ],
-                "urgency": "WARNING",
-                "fallback": True
-            }
+            "data": result,
         })
+
+    except Exception:
+        app.logger.exception("Gemini AI diagnosis failed")
+        return jsonify({
+            "ok": False,
+            "error": (
+                "AI diagnosis failed. Check the server logs "
+                "for the underlying error."
+            ),
+        }), 502
+
 
 
 # ==================================================
