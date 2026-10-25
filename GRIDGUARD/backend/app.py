@@ -26,8 +26,8 @@ FRONTEND_DIR = os.path.join(BASE_DIR, "frontend")
 app = Flask(__name__)
 CORS(app)
 
-# Initialize Google GenAI Client
-client = genai.Client()
+# Gemini client is initialized inside the diagnosis endpoint.
+# API keys are loaded securely from environment variables.
 
 active_leak = None
 
