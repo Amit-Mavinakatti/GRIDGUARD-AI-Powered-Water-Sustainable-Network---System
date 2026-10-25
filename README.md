@@ -122,8 +122,7 @@ Install the following:
 Open PowerShell and run:
 
 ```powershell
-git clone https://github.com/Amit-Mavinakatti/gridguard-ai.git
-cd gridguard-ai
+ https://github.com/Amit-Mavinakatti/GRIDGUARD-AI-Powered-Water-Sustainable-Network---System.git  
 ```
 
 ### 3. Create a virtual environment
